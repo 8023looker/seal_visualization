@@ -1,4 +1,4 @@
-import * as BookTraj from "@/data/BookTraj"
+import * as BookTraj from "@/data/BookTraj_old"
 export const book_types = {
     经部: {
         zh: "经部",
@@ -1954,8 +1954,8 @@ export const book_card_trans = {
             "zh": "南宋-祝穆-撰",
             "en": "Southern Song Dynasty-Zhu Mu-Apocryphal"
         },
-        "唐-杜甫-撰/宋-徐居仁-編次/宋-黃鶴-補注": {
-            "zh": "唐-杜甫-撰/宋-徐居仁-編次/宋-黃鶴-補注",
+        "唐-杜甫-撰/宋-徐居仁-編次/宋-黃鶴-補注  \n": {
+            "zh": "唐-杜甫-撰/宋-徐居仁-編次/宋-黃鶴-補注  \n",
             "en": "Tang-Du Fu-Written/Song-Xu Juren-edited/Song-Huang He-Supplementary note"
         },
         "南朝梁-蕭統-編撰/唐-李善-注/唐-五臣（呂延濟、劉良、張銑、呂向、李周瀚）-注": {

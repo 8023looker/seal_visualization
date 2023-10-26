@@ -8,46 +8,13 @@ const debug = false;
 export default createStore({
     state: {
         rem: null,
-        imageSource: "offline",
-        exhibition: true,
         language: "zh",
         cur_view: "timeline",
-        showReadme: false,
-        // cur_view: "geomap",
         overlay_view: null,
         overlay_duration: 2000,
-        show_source_libs: true,
-        filter: {
-            book: null,
-            agent: null,
-            academic_school: null,
-            library: null,
-            time_range: null,
-            china2japan: null,
-        },
-        selection: {
-            entity: null,
-            value: null,
-        },
-        hover: {
-            entity: null,
-            value: null,
-        },
-        transition: {
-            from: null,
-            to: null,
-            state: null,
-        },
-        // 用于切换时间线完整视图
-        switchWholeView: "timeline_full", // 默认显示
-        timelineBook: '王荊文公詩', // book_name, deafult is null, case: 王荊文公詩, 初學記
-        curEventData: [], // 当前书籍的event(更换event sequence与timestampUpdated)
-        curReasonData: [], // 当前书籍的reason_data(更换event sequence, time_inferred, time_interval_adjusted)
+
     },
     mutations: {
-        change_show_source_libs(state, payload) {
-            state.show_source_libs = payload;
-        },
         changeRem(state, payload) {
             state.rem = payload;
         },
@@ -73,20 +40,20 @@ export default createStore({
             if (debug) console.log("changeCurView", payload);
             state.cur_view = payload;
         },
-        changeFilter(state, payload) {
-            if (debug) console.log("changeFilter", payload);
-            let entity = payload.entity;
-            let value = payload.value;
-            state.filter[entity] = value;
-        },
-        changeSelection(state, payload) {
-            if (debug) console.log("changeSelection", payload);
-            state.selection = payload;
-        },
-        changeHover(state, payload) {
-            if (debug) console.log("changeHover", payload);
-            state.hover = payload;
-        },
+        // changeFilter(state, payload) {
+        //     if (debug) console.log("changeFilter", payload);
+        //     let entity = payload.entity;
+        //     let value = payload.value;
+        //     state.filter[entity] = value;
+        // },
+        // changeSelection(state, payload) {
+        //     if (debug) console.log("changeSelection", payload);
+        //     state.selection = payload;
+        // },
+        // changeHover(state, payload) {
+        //     if (debug) console.log("changeHover", payload);
+        //     state.hover = payload;
+        // },
         transCompleted(state, payload) {
             if (debug) {
                 console.log("transCompleted");
@@ -114,23 +81,6 @@ export default createStore({
                 trans.state = null;
                 if (debug) console.log("transition finished");
             }
-        },
-        // 用于控制切换整体view
-        changeWholeView(state, payload) {
-            state.switchWholeView = payload;
-        },
-        changeTimelineBook(state, payload) {
-            state.timelineBook = payload;
-        },
-        changeShowReadme(state, payload) {
-            state.showReadme = payload;
-        },
-        // 修改更新event data和reason data
-        changeEventData(state, payload) {
-            state.curEventData = payload;
-        },
-        changeReasonData(state, payload) {
-            state.curReasonData = payload;
         },
     },
     actions: {},

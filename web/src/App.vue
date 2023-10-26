@@ -1,23 +1,37 @@
 <template>
-    <!-- <LabelTestVue></LabelTestVue> -->
-    <!-- <TestMoveIntersectionVue></TestMoveIntersectionVue> -->
-    <!-- <TestSimpleOffsetLabelManager></TestSimpleOffsetLabelManager> -->
-    <div class="app backgrounded">
-        <div class="timeline-full-view" v-show="switchWholeView === 'timeline_full'">
-            <TimelineFull></TimelineFull>
+    <router-view />
+    <div class="app backgrounded" v-if="render_main">
+        <div class="header">
+            <Title></Title>
+            <SwitchView></SwitchView>
         </div>
-        <div class="default-view" v-show="switchWholeView === 'default'">
-            <div class="main-panel">
-                <div id="main-view" v-if="render_main">
-                    <Timeline
-                        v-show="
-                            cur_view === 'timeline' ||
-                            overlay_view === 'timeline'
-                        "
-                        :canvas_width="canvas_width"
-                        :canvas_height="canvas_height"
-                    ></Timeline>
-                </div>
+        <div class="left-panel">
+           
+        </div>
+        <div class="bottom-panel">
+            <div class="time-axis">
+                <TimeAxis></TimeAxis>
+            </div>
+        </div>
+        <div class="main-panel">
+            <div id="main-view" v-if="render_main">
+                <!-- <Graph
+                    v-show="cur_view === 'graph' || overlay_view === 'graph'"
+                    :canvas_width="canvas_width"
+                    :canvas_height="canvas_height"
+                ></Graph> -->
+                <Timeline
+                    v-show="
+                        cur_view == 'timeline' || overlay_view === 'timeline'
+                    "
+                    :canvas_width="canvas_width"
+                    :canvas_height="canvas_height"
+                ></Timeline>
+                <!-- <GeoMap
+                    v-show="showGeoMap"
+                    :canvas_width="canvas_width"
+                    :canvas_height="canvas_height"
+                ></GeoMap> -->
             </div>
         </div>
     </div>
@@ -26,13 +40,14 @@
 <script>
 const $ = require("jquery");
 
-import { PageSize } from "@/data/Data.js";
+// import { PageSize } from "@/data/Data.js";
 
 import Title from "./components/Title.vue";
+import SwitchView from "./components/SwitchView.vue";
 import Timeline from "./components/Timeline.vue";
-import TimelineFull from "./components/TimelineFull.vue";
-import BookList from "./components/BookList.vue";
-import Legend from "./components/Legend.vue";
+import SwitchLanguage from "./components/SwitchLanguage.vue";
+import TimeAxis from "./components/TimeAxis.vue";
+
 
 import { mapState } from "vuex";
 
@@ -56,22 +71,28 @@ export default {
         };
     },
     components: {
+        SwitchView,
         Timeline,
-        BookList,
         Title,
-        Legend,
-        TimelineFull,
+        SwitchLanguage,
+        TimeAxis,
     },
     computed: {
-        ...mapState([
-            "cur_view",
-            "overlay_view",
-            "switchWholeView",
-            "showReadme",
-        ]),
+        ...mapState(["cur_view", "overlay_view"]),
+
     },
     watch: {
-
+        showGeoMap: {
+            handler: function (newVal) {
+                // this.renderComponent = false;
+                // setTimeout(() => {
+                //     this.renderComponent = true;
+                // }, 500);
+                console.log("current view changed to " + newVal);
+                // debugger;
+            },
+            // flush: 'post'
+        },
     },
     methods: {
         setRem() {
@@ -83,26 +104,52 @@ export default {
             this.$store.commit("changeRem", rem);
             document.documentElement.style.fontSize = rem + "px";
         },
+        setCanvas() { // 确定画布的大小
+            let width = window.innerWidth;
+            let height = window.innerHeight;
+            // 将画布默认为16:9
+            if (width / height > 16 / 9) { // 以height为基准
+                width = height * 16 / 9
+            } else { // 以width为基准
+                height = width * 9 / 16
+            }
+            this.canvas_width = width;
+            this.canvas_height = height;
+        },
         initialize() {
-            this.setRem();
-
-            this.canvas_width = $(".main-panel").width();
-            this.canvas_height = $(".main-panel").height();
+            const self = this
+            self.setRem();
+            self.setCanvas();
+            // 弃用
+            // that.canvas_width = $(".main-panel").width();
+            // that.canvas_height = $(".main-panel").height();
 
             setTimeout(() => {
-                this.render_main = true;
+                self.render_main = true;
             }, 500);
         },
     },
     mounted() {
+        const that = this
+        // console.log('windows width', $(window).width(), $(document).width(), window.innerWidth)
+        // console.log('windows height', $(window).height(), $(document).height(), window.innerHeight)
         this.initialize();
-        window.onresize = () => {
-            this.renderComponent = false;
-            this.initialize();
+        window.addEventListener("resize", function() {
+            // 在窗口大小调整时执行的操作
+            that.renderComponent = false;
+            that.initialize();
             setTimeout(() => {
-                this.renderComponent = true;
+                that.renderComponent = true;
             }, 500);
-        };
+            console.log("窗口大小已调整");
+        });
+        // window.onresize = () => {
+        //     this.renderComponent = false;
+        //     this.initialize();
+        //     setTimeout(() => {
+        //         this.renderComponent = true;
+        //     }, 500);
+        // };
     },
 };
 </script>
@@ -161,7 +208,7 @@ body {
 
 @font-face {
     font-family: "SONGTI";
-    src: url("./assets/fonts/FZSSJW.TTF");
+    src: url("./assets/fonts/FZQINGKBYSJF.TTF");
 }
 
 .backgrounded {
@@ -176,10 +223,52 @@ body {
     width: 100vw;
 
     $title-height: 6.4vh;
-    $left-panel-width: 30vh;
+    $left-panel-width: 15vw;
     $bottom-panel-height: 10vh;
 
     $switch-lang-width: $left-panel-width;
+
+    .header {
+        position: absolute;
+        height: $title-height;
+        width: 100vw;
+        // background-color: rgba(240, 248, 255, 0.085);
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .left-panel {
+        position: absolute;
+        width: $left-panel-width;
+        // height: 100vh - $title-height - $bottom-panel-height;
+        height: 100vh - $title-height;
+        top: $title-height;
+        // font-family: FZQINGKBYSJF;
+        background-color: rgba(13, 79, 137, 0.05);
+
+        // $book-list-height: 60%;
+        $book-list-height: 40%;
+    }
+
+    .bottom-panel {
+        position: absolute;
+        height: $bottom-panel-height;
+        left: $left-panel-width;
+        width: calc(100vw - $left-panel-width);
+        bottom: 0vh;
+        background-color: rgba(127, 255, 212, 0.119);
+        display: flex;
+        flex-direction: row;
+
+        .time-axis {
+            position: relative;
+            // width: 100vw - $switch-lang-width;
+            width: 100%;
+            height: 100%;
+            // background-color: rgba(176, 196, 222, 0.212);
+        }
+    }
 
     .main-panel {
         position: absolute;
@@ -196,8 +285,18 @@ body {
             position: relative;
             height: 100%;
             width: 100%;
+            background-color: rgba(240, 255, 255, 0.6);
             // font-family: FZQINGKBYSJF;
         }
+    }
+
+    .fade-enter-active,
+    .fade-leave-active {
+        transition: opacity 1s; /* 过渡效果的持续时间 */
+    }
+    .fade-enter-from,
+    .fade-leave-to {
+        opacity: 0; /* 初始透明度 */
     }
 }
 </style>

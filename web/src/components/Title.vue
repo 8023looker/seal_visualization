@@ -4,9 +4,7 @@
             {{ title[language] }}
         </div>
 
-        <div class="subtitle" v-if="exhibition"><p>中日汉籍流传可视化</p></div>
-
-        <div class="lang-select" v-if="!exhibition">
+        <div class="lang-select">
             <el-dropdown
                 trigger="click"
                 popper-class="articleDropdownPopper"
@@ -45,8 +43,8 @@ export default {
             // cur_lang: "zh",
             langs: ["zh", "en"],
             title: {
-                zh: "典藏之路",
-                en: "LiberRoad",
+                zh: "印章可视化",
+                en: "Seal Visualization",
             },
             lang_dict: {
                 zh: "中文",
@@ -55,7 +53,7 @@ export default {
         };
     },
     computed: {
-        ...mapState(["language", "exhibition"]),
+        ...mapState(["language"]),
     },
     methods: {
         handleSelectChange(e) {
@@ -77,23 +75,12 @@ export default {
     display: flex;
     flex-direction: row;
     align-items: center;
-    color: #5a3a20;
 
     .title-name {
         font-size: 2rem;
         font-weight: bold;
         text-align: center;
         padding: 1rem;
-    }
-
-    .subtitle {
-        color: #6e4d2b;
-        font-size: 1.4rem;
-        height: 2rem;
-        display: flex;
-        align-items: flex-end;
-        padding-left: 0.8rem;
-        border-left: 2px solid #6e4d2b;
     }
 
     .lang-select {
