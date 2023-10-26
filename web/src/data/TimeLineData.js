@@ -72,4 +72,30 @@ let big_event = [
         ['满清入关', 1644]
     ]
 
+let od_data = {};
+
+export function getDataByTimeRange(l, r) {
+    return od_data.filter(d => (+d.index_year >= l && +d.index_year < r));
+}
+
+export function getBins(l, r, step) {
+    let bins = d3.range(Math.ceil((r - l) / step)).map(d => [l + d * step, l + d * step + step]);
+    return bins
+}
+
+export function getPeriodLegend() {
+    return period_legend;
+}
+
+export function getQingNianhao() {
+    return qing_nainhao;
+}
+
+export function getBigEvent() {
+    return big_event;
+}
+
+export function getJpPeriodData() {
+    return jp_period_legend;
+}
 

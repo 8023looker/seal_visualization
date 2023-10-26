@@ -10,11 +10,6 @@
             <div class="left-panel">
             
             </div>
-            <div class="bottom-panel">
-                <div class="time-axis">
-                    <TimeAxis></TimeAxis>
-                </div>
-            </div>
             <div class="main-panel">
                 <div id="main-view" v-if="render_main">
                     <!-- <Graph
@@ -49,7 +44,7 @@ import Title from "./components/Title.vue";
 import SwitchView from "./components/SwitchView.vue";
 import Timeline from "./components/Timeline.vue";
 import SwitchLanguage from "./components/SwitchLanguage.vue";
-import TimeAxis from "./components/TimeAxis.vue";
+// import TimeAxis from "./components/TimeAxis.vue";
 
 
 import { mapState } from "vuex";
@@ -84,7 +79,7 @@ export default {
         Timeline,
         Title,
         SwitchLanguage,
-        TimeAxis,
+        // TimeAxis,
     },
     computed: {
         ...mapState(["cur_view", "overlay_view"]),
@@ -105,8 +100,10 @@ export default {
     },
     methods: {
         setRem() {
-            let width = window.innerWidth;
-            let height = window.innerHeight;
+            // let width = window.innerWidth;
+            // let height = window.innerHeight;
+            let width = this.render_width
+            let height = this.render_height
             const scale = Math.max(width, height) / 1280;
             let rem = baseSize * Math.min(scale, 2);
             rem = Math.min(rem, 20);
@@ -125,13 +122,17 @@ export default {
             } else { // 以width为基准
                 height = width * 9 / 16
             }
+            // 整个画布的渲染大小
             this.render_width = width;
             this.render_height = height;
+            // main_panel的窗口大小
+            this.canvas_width = width * (1 - 10 / 100)
+            this.canvas_height = height * (1 - 6.4 / 100)
         },
         initialize() {
-            const self = this
-            self.setRem();
+            const self = this       
             self.setCanvas();
+            self.setRem();
             // 弃用
             // that.canvas_width = $(".main-panel").width();
             // that.canvas_height = $(".main-panel").height();
@@ -154,7 +155,7 @@ export default {
             setTimeout(() => {
                 that.renderComponent = true;
             }, 500);
-            console.log("窗口大小已调整", that.render_width, that.window_width);
+            // console.log("窗口大小已调整", that.render_width, that.window_width);
         });
         // window.onresize = () => {
         //     this.renderComponent = false;
@@ -236,10 +237,10 @@ body {
     width: 100vw;
     .app-canvas {
         position: absolute;
-        
+
         $title-height: 6.4%;
-        $left-panel-width: 15%;
-        $bottom-panel-height: 10%;
+        $left-panel-width: 10%;
+        // $bottom-panel-height: 10%;
 
         $switch-lang-width: $left-panel-width;
 
@@ -263,28 +264,29 @@ body {
             background-color: rgba(13, 79, 137, 0.05);
         }
 
-        .bottom-panel {
-            position: absolute;
-            height: $bottom-panel-height;
-            left: $left-panel-width;
-            width: calc(100% - $left-panel-width);
-            bottom: 0%;
-            background-color: rgba(127, 255, 212, 0.119);
-            display: flex;
-            flex-direction: row;
+        // .bottom-panel {
+        //     position: absolute;
+        //     height: $bottom-panel-height;
+        //     left: $left-panel-width;
+        //     width: calc(100% - $left-panel-width);
+        //     bottom: 0%;
+        //     background-color: rgba(127, 255, 212, 0.119);
+        //     display: flex;
+        //     flex-direction: row;
 
-            .time-axis {
-                position: relative;
-                // width: 100vw - $switch-lang-width;
-                width: 100%;
-                height: 100%;
-                // background-color: rgba(176, 196, 222, 0.212);
-            }
-        }
+        //     .time-axis {
+        //         position: relative;
+        //         // width: 100vw - $switch-lang-width;
+        //         width: 100%;
+        //         height: 100%;
+        //         // background-color: rgba(176, 196, 222, 0.212);
+        //     }
+        // }
 
         .main-panel {
             position: absolute;
-            height: 100% - $title-height - $bottom-panel-height;
+            // height: 100% - $title-height - $bottom-panel-height;
+            height: 100% - $title-height;
             width: calc(100% - $left-panel-width);
             left: $left-panel-width;
             top: $title-height;
@@ -297,7 +299,7 @@ body {
                 position: relative;
                 height: 100%;
                 width: 100%;
-                background-color: rgba(240, 255, 255, 0.6);
+                background-color: rgba(240, 255, 255, 1);
                 // font-family: FZQINGKBYSJF;
             }
         }
