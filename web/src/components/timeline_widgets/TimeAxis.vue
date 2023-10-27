@@ -44,9 +44,9 @@ data() {
         event_offset: 0, // y_offset of event_circle
         };
     },
-    props: ["canvas_width", "canvas_height"],
+    props: ["canvas_width", "canvas_height", "data"],
     computed: {
-        ...mapState(["yearRange", "transition", "rem", "overlay_duration", "cur_view", "language"]),
+        ...mapState(["yearRange", "transition", "rem", "overlay_duration", "cur_view", "language", "painting_name"]),
     },
     watch: {  
         language: function(newVal, oldVal) { // 切换语言的接口
@@ -69,7 +69,7 @@ data() {
         // sHeight = DataProcess.vhToPx(10),
         // 下列参数值改为可变形式
         // yearStart = 1000, // 1101(ori)， 1090
-        yearStart = 960, // 1101(ori)， 1090
+        yearStart = 1295, // 1101(ori)， 1090
         yearEnd = 1965, // 1953(ori)， 1965
         dynasty,
         event,
@@ -209,7 +209,7 @@ data() {
                     else { return 6 } 
                 })
                 .attr("stroke-width", 1)
-                .style('visibility', (d) => d === 1960? 'hidden' : 'block')
+                // .style('visibility', (d) => d === 1960? 'hidden' : 'block')
             g.selectAll("text")
                 .text(function (d) {
                     if (d == 0) return 1;
@@ -226,7 +226,7 @@ data() {
                 .attr('font-weight', (d) => d % 100 === 0 ? 'bold' : null)
                 .attr("fill", "#5a3a20")
                 .attr("alignment-baseline", "hanging")
-                .style('visibility', (d) => d === 1960? 'hidden' : 'block')
+                // .style('visibility', (d) => d === 1960? 'hidden' : 'block')
             });
         // 分隔线
         // if (dynasty == true) {

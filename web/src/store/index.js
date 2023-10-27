@@ -13,6 +13,8 @@ export default createStore({
         overlay_view: null,
         overlay_duration: 2000,
 
+        // seal visualization
+        painting_name: '鹊华秋色图卷',
     },
     mutations: {
         changeRem(state, payload) {
@@ -82,6 +84,11 @@ export default createStore({
                 if (debug) console.log("transition finished");
             }
         },
+
+        // seal visualization
+        changePaintingName(state, payload) {
+            state.painting_name = payload;
+        }
     },
     actions: {},
     modules: {},
