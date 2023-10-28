@@ -50,6 +50,7 @@
                     <svg :id="'seal-icon-group-' + item['index']"></svg>
                 </div>
             </div>
+            <div class="stamped-year" :style="{fontSize: containerParam.unit_pixel * 12 + 'px', top: containerParam.unit_pixel * (165 + 15) + 'px'}">{{ item['stamped_year'][0].toString() + '-' + item['life_span'][1].toString() }}</div>
         </div>
     </div>
     
@@ -163,13 +164,15 @@ export default {
             position: absolute;
             color: white;
             background-color: #A56752;
-            z-index: 9999;
+            z-index: 1;
         }
         .card-rect {
             position: absolute;
             color: #8F7B6C;
             border: 2px solid #8F7B6C;
             // border-radius: 5px;
+            // clip-path: polygon(0% 0%, 25% 0%, 25% 6%, 80% 6%, 80% 0%, 100% 0%, 100% 100%, 0% 100%); // 上开口
+            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 75% 100%, 75% 95%, 25% 95%, 25% 100%, 0% 100%); // 下开口
             .seal-name{
                 display: flex; // new
                 // flex-direction: row;
@@ -209,7 +212,11 @@ export default {
                 overflow-y: auto;
                 // background-color: rgba(247, 171, 0, 0.15);
             }
-        }        
+        }
+        .stamped-year {
+            position: absolute;
+            color: #724A2B;
+        }    
     }
 }
 .seal-circle-container {

@@ -18,6 +18,7 @@ export function draw_seal_circle(seal_data, rem) {
                     .domain(TimescaleParam.timeScale_param()['domain'])
                     .range(TimescaleParam.timeScale_param()['range'])
     let parentDiv = document.getElementById("seal-circle-container")
+    const seal_circle_radius = rem / 3 // circle半径
     let svg = d3.select('.seal-circle-container') // '#seal-circle-container'也行
                 .append('svg')
                 .attr('class', 'seal-circle-svg')
@@ -28,19 +29,26 @@ export function draw_seal_circle(seal_data, rem) {
                         .data(seal_data['collectors'])
                         .join('g')
                         .attr('id', (d) => `${d['collector_name']}-seal-circle-group`)
-                        .attr('transform', (d) => `translate(${timeScale((d['life_span'][0] + d['life_span'][1]) / 2)},0)`)
+                        .attr('transform', (d) => `translate(${timeScale((d['life_span'][0] + d['life_span'][1]) / 2)},0)`) // basic version, 首先移动到life_span中心点处
+
     let single_seal = seal_group.selectAll('g')
                                 .data((d) => d.seals)
                                 .join('g')
                                 .attr('id', (d) => `${d['seal_name']}-circle`)
-                                .attr("transform", (d, i) =>
-                                    `translate(0,${$('.seal-circle-svg').height() - (rem * 3 / 15) * i})`
-                                )
+                                // .attr("transform", (d, i) =>
+                                //     `translate(0,${$('.seal-circle-svg').height() - (rem * 3 / 15) * i})`
+                                // ) // basic version
+                                .attr('transform', (d, i, array) => {
+                                    const seal_per_column = 6, // 每列放seal_name icon的个数
+                                          column_num = Math.ceil(array.length / seal_per_column),
+                                          group_container_width = column_num * seal_circle_radius * 2 + (column_num - 1) * seal_circle_radius * 0.1 // 最后计算出来的坐标整体左移 group_container_width / 2 个单位
+                                    return `translate(${Math.floor(i / 6) * seal_circle_radius * (2 + 0.1) - group_container_width / 2 - seal_circle_radius},${$('.seal-circle-svg').height() - ((i % 6) * seal_circle_radius * (2 + 0.1)) - seal_circle_radius * 1.1})`
+                                })
     console.log($('.seal-circle-svg').height())                
-    single_seal.append('circle')
-                
-                .attr("r", rem / 15)
-                .attr("fill", 'steelblue')
+    single_seal.append('circle')            
+                .attr("r", seal_circle_radius) // basic version (too small)
+                .attr("fill", '#A56752')
+                // .attr('stroke', 'white')
 }
 
 export function SealCardMapping(seal_data) { // 将所有的印章图片加载成为一个list
@@ -72,6 +80,7 @@ export function SealCardMapping(seal_data) { // 将所有的印章图片加载�
                     'series_list': seal_pic_index_list,
                     'image_href': 'http://vis.pku.edu.cn/seal_visualization/assets/seal_images/que_hua_qiu_se_tu_juan/seal_' + cur_seal['seal_pic'][k]['index'] + '.jpg',
                     'collector_seal_offset': j, // 当前所属的鉴藏者seal的相对偏移量offset
+                    'stamped_year': cur_collector['life_span'], // 盖章时间，暂时等于鉴藏者的life span，留出接口
                     ...collector_para
                 })
             }
@@ -91,27 +100,52 @@ export function getSealCardContainerSize() { // 根据屏幕大小计算印章�
     }
 }
 
+export function reconstructSealData(card_list) { // reconstruct collector_seal_dict
+    let collector_seal_dict = {} // 层级结构，鉴藏者(dict)-印章名称(以list的形式存在)-印章图片(seal_pic, 以list的形式存在)
+    // 第1次遍历card_list，将seal_pic按照人物聚类
+    for (let i in card_list) {
+        if (!collector_seal_dict.hasOwnProperty(card_list[i]['collector_name'])) { // 当前印章的鉴藏者还没有录入
+            collector_seal_dict[card_list[i]['collector_name']] = [{
+                'seal_name': card_list[i]['seal_name'],
+                'seal_pic': [card_list[i]]
+            }]
+        } else { // 当前鉴藏者已经录入
+            let found_seal_name = false
+            for (let j in collector_seal_dict[card_list[i]['collector_name']]) { // 遍历seal_name
+                if (collector_seal_dict[card_list[i]['collector_name']][j]['seal_name'] === card_list[i]['seal_name']) {
+                    found_seal_name = true
+                    collector_seal_dict[card_list[i]['collector_name']][j]['seal_pic'].push(card_list[i])
+                    break
+                } else {
+                    continue
+                }
+            }
+            if (!found_seal_name) { // 没有录入当前的印章名称
+                collector_seal_dict[card_list[i]['collector_name']].push({
+                    'seal_name': card_list[i]['seal_name'],
+                    'seal_pic': [card_list[i]]
+                })
+            }
+        }
+    }
+    return collector_seal_dict
+}
+
 export function renderSealIconGroup(card_list, icon_size) { // here "index" is in number format
     const container_width = $('.seal-icon-group').width(), // 虽然有多个group，但是他们的width相同
           gap = (container_width - icon_size * 6) / 5
-    let collector_seal_dict = {}
-    // 第1次遍历，将seal_pic按照人物聚类
+    let collector_seal_dict = reconstructSealData(card_list) // 层级结构，鉴藏者-印章名称-印章图片
+
+    // 遍历card_list，render
     for (let i in card_list) {
-        if (!collector_seal_dict.hasOwnProperty(card_list[i]['collector_name'])) { // 当前印章的鉴藏者还没有录入
-            collector_seal_dict[card_list[i]['collector_name']] = [card_list[i]]
-        } else {
-            collector_seal_dict[card_list[i]['collector_name']].push(card_list[i])
-        }
-    }
-    // 第2次遍历，render
-    for (let i in card_list) {
+        let seal_group = collector_seal_dict[card_list[i]['collector_name']]
         let svg = d3.select(`#seal-icon-group-${card_list[i]['index']}`) // '#seal-circle-container'也行
                     .attr('width', container_width)
-        let seal_group = collector_seal_dict[card_list[i]['collector_name']]
+                    .attr('height', Math.ceil(seal_group.length / 6) * icon_size + icon_size * 0.3 * 1 + (Math.ceil(seal_group.length / 6) - 1) * icon_size * 0.4) // 按理来说应该是0.3 * 2
         let seal_icon = svg.selectAll('g')
                             .data(seal_group)
                             .join('g')
-                            .attr('class', (d) => `seal-icon-rect-${d['index']}`)
+                            .attr('class', (d) => `seal-icon-rect-${d['seal_name']}`)
                             .attr('transform', (d, i) => `translate(${i % 6 * (icon_size + gap)},${Math.floor(i / 6) * icon_size * (1 + 0.4) + icon_size * 0.3})`)
         seal_icon.append('rect')
                  .attr('x', 0)
@@ -119,15 +153,16 @@ export function renderSealIconGroup(card_list, icon_size) { // here "index" is i
                  .attr('width', icon_size)
                  .attr('height', icon_size)
                  .attr('fill', '#A56752')
+                 .attr('fill-opacity', (d) => d['seal_pic'][0]['series_list'].includes(card_list[i]['index']) ? 1 : 0.6)
         seal_icon.append('text')
                  .attr('x', icon_size / 2)
                  .attr('y', icon_size / 2)
                  .attr('dy', icon_size * 0.325)
                  .attr("text-anchor", "middle")
-                 .text((d) => d['series_num'])
+                 .text((d) => d['seal_pic'].length)
                  .attr('font-size', icon_size * 1)
                  .attr('fill', 'white')
-                 .style('visibility', (d) => d['series_num'] === 1 ? 'hidden' : 'visible')
+                 .style('visibility', (d) => d['seal_pic'].length === 1 ? 'hidden' : 'visible')
     }
     
 }
