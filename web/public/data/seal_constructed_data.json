@@ -582,8 +582,8 @@
                 "collector_id": "owner-1",
                 "collector_id_ori": "1",
                 "collector_name": "董其昌",
-                "life_span": "",
-                "intro": "",
+                "life_span": [1555, 1636],
+                "intro": "董其昌，字玄宰，号思白、思翁，别号香光居士，直隶华亭县（今上海松江区）人。明朝政治人物，书画家。",
                 "seals": [
                     {
                         "seal_name": "董其昌印",
@@ -641,8 +641,8 @@
                 "collector_id": "owner-2",
                 "collector_id_ori": "2",
                 "collector_name": "爱新觉罗·永琰",
-                "life_span": "",
-                "intro": "",
+                "life_span": [1760, 1820],
+                "intro": "爱新觉罗·永琰为清朝第七位皇帝嘉庆帝，谥号睿皇帝。乾隆皇帝的第十五子，生母孝仪纯皇后魏佳氏。",
                 "seals": [
                     {
                         "seal_name": "嘉庆御览之宝",
@@ -664,8 +664,8 @@
                 "collector_id": "owner-3",
                 "collector_id_ori": "3",
                 "collector_name": "纳兰性德",
-                "life_span": "",
-                "intro": "",
+                "life_span": [1655, 1685],
+                "intro": "纳兰性德（纳兰氏，又称作那拉氏），原名成德，避太子保成讳改名为性德，字容若，号饮水、楞伽山人。",
                 "seals": [
                     {
                         "seal_name": "楞伽",
@@ -975,7 +975,7 @@
                 "collector_id": "owner-4",
                 "collector_id_ori": "4",
                 "collector_name": "--",
-                "life_span": "",
+                "life_span": [1450, 1965],
                 "intro": "",
                 "seals": [
                     {
@@ -1562,8 +1562,8 @@
                 "collector_id": "owner-5",
                 "collector_id_ori": "5",
                 "collector_name": "陆质雅",
-                "life_span": "",
-                "intro": "",
+                "life_span": [1884, 1964],
+                "intro": "陆质雅，原名昶彬，字衡若，又字若公，号北堂、石匋，别署砚海居士、砚海渔隐、一粟庵主、华山词客等，斋号古镜堂、石匋山馆、五罗轩、倚石居、翠山馆、留香室等。",
                 "seals": [
                     {
                         "seal_name": "一粟斋",
@@ -1585,8 +1585,8 @@
                 "collector_id": "owner-6",
                 "collector_id_ori": "6",
                 "collector_name": "爱新觉罗·弘历",
-                "life_span": "",
-                "intro": "",
+                "life_span": [1711, 1799],
+                "intro": "爱新觉罗·弘历为清朝第五位皇帝乾隆帝，谥号简称纯皇帝。雍正帝的第四子，是中国历史上最长寿的皇帝以及实际掌权时间最长的皇帝，也是清代中期重要的政治家、书法家、诗人、文学家，对清代命运产生深远影响。",
                 "seals": [
                     {
                         "seal_name": "五福五代堂古稀天子寶",
@@ -1800,8 +1800,8 @@
                 "collector_id": "owner-7",
                 "collector_id_ori": "7",
                 "collector_name": "项铨",
-                "life_span": "",
-                "intro": "",
+                "life_span": [1475, 1540],
+                "intro": "项铨为明代收藏家，曾任吏部考功司郎中。",
                 "seals": [
                     {
                         "seal_name": "子京父",
@@ -1837,8 +1837,8 @@
                 "collector_id": "owner-8",
                 "collector_id_ori": "8",
                 "collector_name": "曹溶",
-                "life_span": "",
-                "intro": "",
+                "life_span": [1613, 1685],
+                "intro": "曹溶，字洁躬，号秋岳，晚号倦圃、锄菜翁、金陀老人，浙江嘉兴人，明末清初政治人物、藏书家，同进士出身。",
                 "seals": [
                     {
                         "seal_name": "曹溶之印",
@@ -1874,8 +1874,8 @@
                 "collector_id": "owner-9",
                 "collector_id_ori": "9",
                 "collector_name": "梁清标",
-                "life_span": "",
-                "intro": "",
+                "life_span": [1620, 1691],
+                "intro": "梁清标，字玉立，号棠村，又号苍岩子、蕉林居士。斋号秋碧堂，直隶真定府真定县人（今河北省正定县）人，明末清初政治人物。",
                 "seals": [
                     {
                         "seal_name": "蕉林書屋",
@@ -1981,8 +1981,8 @@
                 "collector_id": "owner-10",
                 "collector_id_ori": "10",
                 "collector_name": "文彭",
-                "life_span": "",
-                "intro": "",
+                "life_span": [1498, 1573],
+                "intro": "文彭，字寿承，号三桥，别号渔阳子、三桥居士，南直隶苏州府长洲县人，祖籍湖广衡州府衡山县，明朝政治人物、书画家、篆刻家，曾任南京国子监博士，人称文国博。",
                 "seals": [
                     {
                         "seal_name": "文寿承氏",
@@ -2048,8 +2048,8 @@
                 "collector_id": "owner-11",
                 "collector_id_ori": "11",
                 "collector_name": "张应甲",
-                "life_span": "",
-                "intro": "",
+                "life_span": [1625, 1660],
+                "intro": "张应甲，字先三、先山，号希逸，山东胶西人。顺治四年（1647年）拔贡，有文名。应甲与其父皆喜收藏书画，常四处搜购。",
                 "seals": [
                     {
                         "seal_name": "胶西张应甲先三氏珍藏书画印",
@@ -2085,8 +2085,8 @@
                 "collector_id": "owner-12",
                 "collector_id_ori": "12",
                 "collector_name": "郑板桥",
-                "life_span": "",
-                "intro": "",
+                "life_span": [1693, 1766],
+                "intro": "郑板桥，原名郑燮，字克柔，号理庵，又号板桥，人称板桥先生，江苏兴化人，祖籍苏州。清代书画家、文学家。",
                 "seals": [
                     {
                         "seal_name": "痴绝",
@@ -2116,8 +2116,8 @@
                 "collector_id": "owner-13",
                 "collector_id_ori": "13",
                 "collector_name": "爱新觉罗·溥仪",
-                "life_span": "",
-                "intro": "",
+                "life_span": [1906, 1967],
+                "intro": "爱新觉罗·溥仪，字曜之，号浩然，清朝第12位皇帝宣统帝，是清朝以及中国历史上的末任皇帝。",
                 "seals": [
                     {
                         "seal_name": "宣统鑑变",
@@ -2167,8 +2167,8 @@
                 "collector_id": "owner-14",
                 "collector_id_ori": "14",
                 "collector_name": "张南阳",
-                "life_span": "",
-                "intro": "",
+                "life_span": [1517, 1596],
+                "intro": "张南阳，字山人，松江府上海县人，是明朝的一位假山匠师。他曾帮潘允端建造豫园中的假山、帮陈所蕴建造日涉园以及帮王世贞建造弇山园。",
                 "seals": [
                     {
                         "seal_name": "南阳",

@@ -3,6 +3,7 @@ const $ = require("jquery");
 
 import { jsonCopy } from "@/utils/copy";
 import * as TimescaleParam from "@/utils/timescale_param";
+import * as TypeColor from "@/theme/type_color";
 
 const margin = {
     top: 0.01,
@@ -34,7 +35,6 @@ export function draw_seal_circle(seal_data, rem) {
     let single_seal = seal_group.selectAll('g')
                                 .data((d) => d.seals)
                                 .join('g')
-                                .attr('id', (d) => `${d['seal_name']}-circle`)
                                 // .attr("transform", (d, i) =>
                                 //     `translate(0,${$('.seal-circle-svg').height() - (rem * 3 / 15) * i})`
                                 // ) // basic version
@@ -42,17 +42,36 @@ export function draw_seal_circle(seal_data, rem) {
                                     const seal_per_column = 6, // 每列放seal_name icon的个数
                                           column_num = Math.ceil(array.length / seal_per_column),
                                           group_container_width = column_num * seal_circle_radius * 2 + (column_num - 1) * seal_circle_radius * 0.1 // 最后计算出来的坐标整体左移 group_container_width / 2 个单位
-                                    return `translate(${Math.floor(i / 6) * seal_circle_radius * (2 + 0.1) - group_container_width / 2 - seal_circle_radius},${$('.seal-circle-svg').height() - ((i % 6) * seal_circle_radius * (2 + 0.1)) - seal_circle_radius * 1.1})`
+                                    return `translate(${Math.floor(i / 6) * seal_circle_radius * (2 + 0.1) - group_container_width / 2 - seal_circle_radius},${$('.seal-circle-svg').height() * 0.9 - ((i % 6) * seal_circle_radius * (2 + 0.5)) - seal_circle_radius * 1.1})`
                                 })
     console.log($('.seal-circle-svg').height())                
-    single_seal.append('circle')            
+    single_seal.append('circle')
+                .attr('id', (d) => `${d['seal_name']}-circle`)      
                 .attr("r", seal_circle_radius) // basic version (too small)
-                .attr("fill", '#A56752')
+                // .attr("fill", '#A56752')
+                // .attr('fill', (d) => {
+                //     const group1Data = single_seal.select(function() {
+                //         return this.parentElement;
+                //     }).datum();
+                //     console.log('datum', group1Data)
+                //     return '#A56752'
+                // })
+                .attr('fill', (d) => d['collector_color'])
                 // .attr('stroke', 'white')
+                .append("title") // hover时的小小tooltip
+                    .text((d) => `${d.seal_name}`);
 }
 
 export function SealCardMapping(seal_data) { // 将所有的印章图片加载成为一个list
     let seal_mapped_list = []
+
+    // 首先对collectors按照出生时间排序
+    seal_data['collectors'].sort((a, b) => {
+        if ((a['life_span'][0] + a['life_span'][1]) / 2 < (b['life_span'][0] + b['life_span'][1]) / 2) return -1
+        if ((a['life_span'][0] + a['life_span'][1]) / 2 > (b['life_span'][0] + b['life_span'][1]) / 2) return 1
+        return 0
+    })
+
     for (let i in seal_data['collectors']) { // 遍历每一个鉴藏者
         const cur_collector = seal_data['collectors'][i]
         const collector_para = {
@@ -60,7 +79,8 @@ export function SealCardMapping(seal_data) { // 将所有的印章图片加载�
             'collector_id_ori': cur_collector['collector_id_ori'],
             'collector_name': cur_collector['collector_name'],
             'intro': cur_collector['intro'],
-            'life_span': cur_collector['life_span']
+            'life_span': cur_collector['life_span'],
+            'collector_color': TypeColor.color_list[cur_collector['collector_name']]
         }
         for (let j in cur_collector['seals']) {
             const cur_seal = cur_collector['seals'][j],
@@ -147,13 +167,16 @@ export function renderSealIconGroup(card_list, icon_size) { // here "index" is i
                             .join('g')
                             .attr('class', (d) => `seal-icon-rect-${d['seal_name']}`)
                             .attr('transform', (d, i) => `translate(${i % 6 * (icon_size + gap)},${Math.floor(i / 6) * icon_size * (1 + 0.4) + icon_size * 0.3})`)
+                            
         seal_icon.append('rect')
                  .attr('x', 0)
                  .attr('y', 0)
                  .attr('width', icon_size)
                  .attr('height', icon_size)
-                 .attr('fill', '#A56752')
+                //  .attr('fill', '#A56752')
+                 .attr('fill', (d) => d['seal_pic'][0]['collector_color'])
                  .attr('fill-opacity', (d) => d['seal_pic'][0]['series_list'].includes(card_list[i]['index']) ? 1 : 0.6)
+
         seal_icon.append('text')
                  .attr('x', icon_size / 2)
                  .attr('y', icon_size / 2)
@@ -163,6 +186,8 @@ export function renderSealIconGroup(card_list, icon_size) { // here "index" is i
                  .attr('font-size', icon_size * 1)
                  .attr('fill', 'white')
                  .style('visibility', (d) => d['seal_pic'].length === 1 ? 'hidden' : 'visible')
+        seal_icon.append("title")
+                  .text((d) => `${d.seal_name}`);
     }
-    
 }
+

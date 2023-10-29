@@ -69,7 +69,7 @@ data() {
         // sHeight = DataProcess.vhToPx(10),
         // 下列参数值改为可变形式
         // yearStart = 1000, // 1101(ori)， 1090
-        yearStart = 1295, // 1101(ori)， 1090
+        yearStart = 1450, // 1101(ori)， 1090
         yearEnd = 1965, // 1953(ori)， 1965
         dynasty,
         event,

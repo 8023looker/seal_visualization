@@ -1,10 +1,16 @@
 <template>
-    <div class="seal-card-container">
+    <el-dialog v-model="fullImageModel.show" :title="fullImageModel.label" top="5vh" width="80%">
+        <div style="height: 75vh; width: 70%;">
+            <img :src="fullImageModel.src" style="width: 100%; height: 100%; object-fit: contain;">
+        </div>
+    </el-dialog>
+    <div class="seal-card-container" id="seal-card-container">
         <div v-for="(item, index) in cardList" :key="index" class="seal-card"
+            :id="'seal-card-' + item['seal_name'] + '-' + item['index']"
             v-if="sealContainerShow"
             :style="{left: (containerParam.x + containerParam.card_width * 0.05 + containerParam.card_width * index - containerParam.unit_pixel * 2) + 'px',
                      top: '45%', height: containerParam.card_height * 1.1 + 'px', width: (containerParam.card_width * 0.9 + containerParam.unit_pixel * 4) + 'px'}">
-            <div class="seal-index-rect" :style="{paddingLeft: containerParam.unit_pixel * 2 + 'px', paddingRight: containerParam.unit_pixel * 2 + 'px'}">{{ item['index'] }}</div>
+            <div class="seal-index-rect" :style="{paddingLeft: containerParam.unit_pixel * 2 + 'px', paddingRight: containerParam.unit_pixel * 2 + 'px', height: containerParam.unit_pixel * 18 + 'px', fontSize: containerParam.unit_pixel * 16 + 'px'}">{{ item['index'] }}</div>
             <div class="card-rect" 
                 :style="{top: containerParam.card_height * 0.05 + 'px', height: containerParam.card_height + 'px', left: containerParam.unit_pixel * 0 + 'px', width: containerParam.card_width * 0.9 + 'px'}">
                 <div class="seal-name" 
@@ -13,7 +19,7 @@
                         {{ item['seal_name'] }}
                 </div>
                 <div class="info-row" :style="{top: containerParam.unit_pixel * (45 - 2) + 'px', height: containerParam.unit_pixel * (60 + 4) + 'px', left: '2.5%', width: '95%'}">
-                    <div class="prev-next-arrow" :style="{height: containerParam.unit_pixel * 20 + 'px'}">
+                    <!-- <div class="prev-next-arrow" :style="{height: containerParam.unit_pixel * 20 + 'px'}">
                         <svg width="16" height="19" viewBox="0 0 16 19" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M13.877 2L6.78967 9.76364L13.877 17.1163" stroke="#8F7B6C" stroke-width="3.22" stroke-linecap="round" stroke-linejoin="round"/>
                             <path d="M8.96387 2L1.87658 9.76364L8.96387 17.1163" stroke="#8F7B6C" stroke-width="3.22" stroke-linecap="round" stroke-linejoin="round"/>
@@ -21,13 +27,19 @@
                     </div>
                     <div class="seal-pic"
                         :style="{height: containerParam.unit_pixel * 60 + 'px', width: containerParam.unit_pixel * 60 + 'px'}">
-                        <img :src="item.image_href" style="{max-width: 100%; max-height: 100%; margin-top: 0.1em; margin-bottom: 0em, cursor: 'pointer'}">
+                        <img :src="item.image_href" style="{max-width: 100%; max-height: 100%; margin-top: 0.1em; margin-bottom: 0em, cursor: 'pointer'}"
+                            @click="fullImageModel.show =true, fullImageModel.src=item.image_href, fullImageModel.label = item.seal_name">
                     </div>
                     <div class="prev-next-arrow" :style="{height: containerParam.unit_pixel * 20 + 'px'}">
                         <svg width="16" height="19" viewBox="0 0 16 19" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M2 2L9.08728 9.76364L2 17.1163" stroke="#8F7B6C" stroke-width="3.22" stroke-linecap="round" stroke-linejoin="round"/>
                             <path d="M6.91309 2L14.0004 9.76364L6.91309 17.1163" stroke="#8F7B6C" stroke-width="3.22" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
+                    </div> -->
+                    <div class="seal-pic"
+                        :style="{height: containerParam.unit_pixel * 75 + 'px', width: containerParam.unit_pixel * 75 + 'px'}">
+                        <img :src="item.image_href" style="{max-width: 100%; max-height: 100%; margin-top: 0em; margin-bottom: 0em, cursor: 'pointer'}"
+                            @click="fullImageModel.show =true, fullImageModel.src=item.image_href, fullImageModel.label = item.seal_name">
                     </div>
                 </div>
                 <div class="seal-page"
@@ -60,6 +72,7 @@
 <script>
 import { mapState } from "vuex";
 import * as SealCardFunc from "@/utils/timeline/seal_card_func";
+import * as RenderLinkFunc from "@/utils/timeline/render_link_func";
 
 const d3 = require("d3");
 const $ = require("jquery");
@@ -92,6 +105,11 @@ export default {
                 sealIconSize: 1, // seal icon的大小
             },
             sealContainerShow: false,
+            fullImageModel: {
+                show: false,
+                src: null,
+                label: null
+            }
         };
     },
     props: ["canvas_width", "canvas_height", "data"],
@@ -103,7 +121,7 @@ export default {
         initialize() { },
         getTimeScale() { // 与timeAxis的比例尺对齐
             const self = this
-            let yearStart = 1295,
+            let yearStart = 1450, // 1295
                 yearEnd = 1965,
                 sWidth = $(".time-axis").width()
             let containerRange = [0.08 * sWidth, sWidth * (1 - margin.left - margin.right)]
@@ -120,15 +138,27 @@ export default {
                 self.containerParam['card_height'] = self.containerParam['card_width'] * 0.9 * 175 / 120
                 self.containerParam['unit_pixel'] = self.containerParam['card_height'] / 175
 
-                SealCardFunc.draw_seal_circle(self.data, self.rem) // 绘制seal circle
+                SealCardFunc.draw_seal_circle(self.data, self.containerParam['unit_pixel'] * 12) // 绘制seal circle, self.rem
                 self.cardList = SealCardFunc.SealCardMapping(self.data) // mapped seal pictures into list
                 self.sealContainerShow = true
 
                 setTimeout(() => { // 渲染seal-icon-group
                     self.containerParam['sealIconSize'] = $('.seal-icon-group').height() / 3
                     SealCardFunc.renderSealIconGroup(self.cardList, self.containerParam['sealIconSize'])
+
+                    self.renderLink() // 渲染card2circle link
                 }, timeout_duration)
             }, timeout_duration)
+        },
+        renderLink() {
+            const self = this
+            d3.select('.link-container').selectAll('svg').remove()
+            d3.select('.link-container')
+                .append('svg')
+                .attr('width', $('.link-container').width())
+                .attr('height', $('.link-container').height())
+                .attr('id', 'card2circle-link-svg')
+            RenderLinkFunc.card2circleLink(self.cardList, self.containerParam['unit_pixel'])
         },
     },
     mounted() {
@@ -190,7 +220,8 @@ export default {
                 position: absolute;
                 display: flex;
                 flex-direction: row;
-                justify-content: space-between;
+                // justify-content: space-between; // 多个item时使用（加左右箭头时）
+                justify-content: center; 
                 align-items: center; // new
                 .agent-group {
                     display: flex;

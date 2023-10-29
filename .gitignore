@@ -1,5 +1,6 @@
 .DS_Store
 .vscode
 web/node_modules/*
+web/dist/*
 # /data_process/picture/*
 data_process/picture/*

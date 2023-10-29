@@ -1,6 +1,6 @@
 <template>
     <div class="collector-card-container">
-      
+      {{ '鉴藏者信息卡片' }}
     </div>
 </template>
 
