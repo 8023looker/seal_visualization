@@ -12,11 +12,13 @@
             </div>
             <div class="main-panel">
                 <div id="main-view" v-if="render_main">
-                    <!-- <Graph
-                        v-show="cur_view === 'graph' || overlay_view === 'graph'"
+                    <Overview
+                        v-show="
+                            cur_view === 'overview' || overlay_view === 'overview'
+                        "
                         :canvas_width="canvas_width"
                         :canvas_height="canvas_height"
-                    ></Graph> -->
+                    ></Overview>
                     <Timeline
                         v-show="
                             cur_view === 'timeline' || overlay_view === 'timeline'
@@ -44,6 +46,7 @@ import Title from "./components/Title.vue";
 import SwitchView from "./components/SwitchView.vue";
 import Timeline from "./components/Timeline.vue";
 import SwitchLanguage from "./components/SwitchLanguage.vue";
+import Overview from "./components/Overview.vue";
 // import TimeAxis from "./components/TimeAxis.vue";
 
 
@@ -79,6 +82,7 @@ export default {
         Timeline,
         Title,
         SwitchLanguage,
+        Overview,
         // TimeAxis,
     },
     computed: {

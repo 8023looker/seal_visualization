@@ -5,7 +5,7 @@
                 v-for="(view_name, idx) in views"
                 :key="'view-buttion-' + idx"
                 :class="view_name === cur_view ? 'button selected' : 'button'"
-                @click="$store.commit('changeCurView', view_name)"
+                @click="$store.commit('changeCurViewForce', view_name)" 
             >
                 {{ view_names[view_name][language] }}
             </div>
@@ -55,11 +55,6 @@ export default {
     },
     methods: {
         initialize() { },
-        updateShowOutFlow() {
-            this.showoutflow = d3.select("#show-out-flow-checkbox").property("checked");
-            this.$store.commit("change_show_source_libs", this.showoutflow);
-            
-        }
     },
     mounted() {
         this.initialize();

@@ -20,6 +20,8 @@ export function draw_seal_circle(seal_data, rem) {
                     .range(TimescaleParam.timeScale_param()['range'])
     let parentDiv = document.getElementById("seal-circle-container")
     const seal_circle_radius = rem / 3 // circle半径
+    // 首先清除原本的svg
+    d3.select('.seal-circle-container').selectAll('svg').remove()
     let svg = d3.select('.seal-circle-container') // '#seal-circle-container'也行
                 .append('svg')
                 .attr('class', 'seal-circle-svg')
@@ -111,7 +113,7 @@ export function SealCardMapping(seal_data) { // 将所有的印章图片加载�
 }
 
 export function getSealCardContainerSize() { // 根据屏幕大小计算印章信息卡片的尺寸
-    let sWidth = $(".time-axis").width()
+    let sWidth = $(".main-panel").width() * 0.99 // $(".time-axis").width()
     let renderRange = [0.08 * sWidth, sWidth * (1 - margin.left - margin.right)]
     let renderWidth = renderRange[1] - renderRange[0]
     return { // 仅需知道width,长度按照比例计算

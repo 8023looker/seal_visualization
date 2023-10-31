@@ -60,11 +60,21 @@ data() {
             this.isEvent
             )
         },
+        // cur_view: function(newVal, oldVal) {
+        //     this.initializeTimeline(
+        //         this.canvasWidth,
+        //         this.canvasHeight,
+        //         this.timeStart,
+        //         this.timeEnd,
+        //         this.isDynasty,
+        //         this.isEvent
+        //     )
+        // },
     },
     methods: {
         initializeTimeline(
         // sWidth = $(".app").width() * 0.85 * 1.176, // main-panel换参数了，修改为原$('.app') * 0.85, 1.176 * 0.85 ≈ 1
-        sWidth = $(".time-axis").width(),
+        sWidth = $(".main-panel").width() * 0.99, // $(".time-axis").width()
         sHeight= $(".main-panel").height() * 0.1,
         // sHeight = DataProcess.vhToPx(10),
         // 下列参数值改为可变形式
@@ -79,6 +89,7 @@ data() {
         const width = sWidth;
         console.log('timeAxisSize', [sWidth, sHeight])
         console.log('rem', this.rem) // 大屏：20
+        console.log('timeAxis-sWidth-sHeight', sWidth, sHeight)
         const height = (sHeight / sWidth) * width;
         let ih = height * (1 - margin.top - margin.bottom);
         let iw = width * (1 - margin.left - margin.right);

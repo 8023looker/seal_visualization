@@ -117,13 +117,21 @@ export default {
         ...mapState(["language", "cur_view", "painting_name", "rem"]),
        
     },
+    watch: {
+        cur_view: function(newValue, oldValue) {
+            const self = this
+            if (newValue === 'timeline' && newValue !== oldValue) {
+                self.renderSealCard()
+            }
+        },
+    },
     methods: {
         initialize() { },
         getTimeScale() { // 与timeAxis的比例尺对齐
             const self = this
             let yearStart = 1450, // 1295
                 yearEnd = 1965,
-                sWidth = $(".time-axis").width()
+                sWidth = $(".main-panel").width() * 0.99 // $(".time-axis").width()
             let containerRange = [0.08 * sWidth, sWidth * (1 - margin.left - margin.right)]
             self.timeScale = d3.scaleLinear()
                                 .domain([yearStart, yearEnd])

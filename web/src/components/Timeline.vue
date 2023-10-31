@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="timeline-container">
         <div class="seal-card">
             <SealCard
                 :canvas_width="canvas_width"
@@ -36,6 +36,7 @@ import SealCard from "./timeline_widgets/SealCard.vue";
 
 import * as Data from "@/data/Data.js";
 import * as TypeColor from "@/theme/type_color";
+import * as DataProcess from "@/utils/data_process"
 
 export default {
     name: "Timeline",
@@ -64,15 +65,6 @@ export default {
                 "collectors": self.data['collectors'].slice(0, 1)
             }
         },
-        getCollectorColor() {
-            const self = this
-            for (let i in self.data['collectors']) {
-                self.data['collectors'][i]['collector_color'] = TypeColor.color_list[self.data['collectors'][i]['collector_name']]
-                for (let j in self.data['collectors'][i]['seals']) {
-                    self.data['collectors'][i]['seals'][j]['collector_color'] = TypeColor.color_list[self.data['collectors'][i]['collector_name']]
-                }
-            }
-        },
     },
     mounted() {
         const that = this
@@ -83,7 +75,7 @@ export default {
             }
         }
         // that.getSubSet() // 用于测试的demo
-        that.getCollectorColor()
+        that.data = DataProcess.getCollectorColor(that.data)
         // console.log("seal_data", that.data)
         that.initialize();
     },
@@ -91,7 +83,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.container {
+.timeline-container {
     position: absolute;
     width: 100%;
     height: 100%;

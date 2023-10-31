@@ -9,9 +9,18 @@ export default createStore({
     state: {
         rem: null,
         language: "zh",
-        cur_view: "timeline",
+        cur_view: "overview", // "timeline", "overview"
         overlay_view: null,
         overlay_duration: 2000,
+        transition: {
+            from: null,
+            to: null,
+            state: null,
+        },
+        selection: {
+            entity: null, // collector, seal_name, seal_pic
+            value: [], // list (For seal_pic, the "index" attribute is stored in the list)
+        },
 
         // seal visualization
         painting_name: '鹊华秋色图卷',
@@ -88,7 +97,11 @@ export default createStore({
         // seal visualization
         changePaintingName(state, payload) {
             state.painting_name = payload;
-        }
+        },
+        changeSelection(state, payload) {
+            if (debug) console.log("changeSelection", payload);
+            state.selection = payload;
+        },
     },
     actions: {},
     modules: {},

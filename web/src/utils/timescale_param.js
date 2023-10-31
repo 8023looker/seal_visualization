@@ -9,7 +9,7 @@ const margin = {
 export function timeScale_param() {
     let yearStart = 1450,
         yearEnd = 1965,
-        sWidth = $(".time-axis").width()
+        sWidth = $(".main-panel").width() * 0.99 // $(".time-axis").width()
     let containerRange = [0.08 * sWidth, sWidth * (1 - margin.left - margin.right)]
     return {
         domain: [yearStart, yearEnd],
