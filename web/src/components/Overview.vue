@@ -13,7 +13,9 @@
             </div>
        </div>
        <div class="thumbnail-container">
-            <Thumbnail></Thumbnail>
+            <Thumbnail
+                :original_painting="original_painting"
+            ></Thumbnail> <!--需要computed-->
        </div>
     </div>
 </template>
@@ -40,12 +42,14 @@ import * as SealCardFunc from "@/utils/timeline/seal_card_func";
 export default {
     name: "Overview",
     components: {
-        OverviewCard
+        OverviewCard,
+        Thumbnail
     },
     data() {
         return {
             data: null,
             cardList: [],
+            painting_name_en: '', 
             imageSrc: {
                 origin: null,
                 small: null
@@ -57,6 +61,10 @@ export default {
                 zoom: 1,
             },
             resize_scale: 1, // 原始图片的缩放倍数
+            original_painting: { // 原始图片的加载参数，用于向子组件Thumbnail传参
+                complete: false
+            },
+            fullImageContainerX: 0, // 当前full-image-container的x坐标值, 用于更新thumbnail_rect
         };
     },
     props: ["canvas_width", "canvas_height"],
@@ -88,7 +96,7 @@ export default {
                 // console.log('ImageParam Updated', newVal)
                 console.log(newVal.visible)
                 if (newVal.visible) {
-                    OverviewFunction.detectImageScroll() // 当图片加载成功时，detect scroll offset
+                    // OverviewFunction.detectFullImageScroll() // 当图片加载成功时，detect scroll offset
                 }
             },
             deep: true
@@ -99,6 +107,18 @@ export default {
                 
             },
             deep: true
+        },
+        original_painting: { // 实时监听original_painting的变化
+            handler: function(newVal, oldVal) {
+               
+            },
+            deep: true
+        },
+        fullImageContainerX: function(newVal, oldVal) {
+            if (newVal !== oldVal)  {
+                OverviewFunction.setFullImageContainerX(newVal)
+                OverviewFunction.fullImageDragThumbnail()
+            }
         },
     },
     methods: {
@@ -114,10 +134,19 @@ export default {
                 "collectors": self.data['collectors'].slice(0, 1)
             }
         },
+        detectFullImageScroll() { // 对于上面的高清大图'full-image-container
+            const self = this
+            // console.log("detectImageScroll")
+            let eventDiv = document.getElementById('full-image-container') // 信息卡片container
+            eventDiv.addEventListener('scroll', function() { // 实时监听scroll
+            //    console.log('image-container移动啦, thumbnail也要跟着移动啦', eventDiv.scrollLeft)
+               self.fullImageContainerX = eventDiv.scrollLeft
+            })
+        },
         getPaintingParams() {
             const self = this
-            self.imageSrc['origin'] = 'data/que_hua_qiu_se_tu_juan.jpg' // image href(local)
-            // self.imageSrc['origin'] = 'https://vis.pku.edu.cn/seal_visualization/assets/painting_images/que_hua_qiu_se_tu_juan/que_hua_qiu_se_tu_juan.jpg'
+            self.imageSrc['origin'] = 'data/' + self.painting_name_en + '.jpg' // image href(local)
+            // self.imageSrc['origin'] = 'https://vis.pku.edu.cn/seal_visualization/assets/painting_images/que_hua_qiu_se_tu_juan/' + self.painting_name_en + '.jpg'
 
             let img_preview = new Image() // 小图片
             img_preview.src = self.imageSrc['small']
@@ -169,8 +198,11 @@ export default {
                 // 1. 当高分辨率图片加载完成后，替换预览图像的src属性
                 const previewImage = document.getElementById('preview-image')
                 previewImage.src = self.imageSrc['origin']
+
                 // 2. 当加载完成后再显示(这里在加载完成小图片的时候就已经visible = true了)
                 // self.imageParam['visible'] = true // v-if="imageParam.visible"
+
+                self.original_painting = img // 用于向子组件Thumbnail.vue的original_painting传参
 
                 setTimeout(() => {
                     self.renderUnselectedLayer()
@@ -192,6 +224,8 @@ export default {
                     previewImage.src = self.imageSrc['origin']
                     // 2. 当加载完成后再显示(这里在加载完成小图片的时候就已经visible = true了)
                     // self.imageParam['visible'] = true // image-scroll-container
+
+                    self.original_painting = img // 用于向子组件Thumbnail.vue的original_painting传参
 
                     setTimeout(() => {
                         self.renderUnselectedLayer()
@@ -252,8 +286,11 @@ export default {
         const that = this
         console.log('进入到overview啦')
 
-        that.imageSrc['small'] = 'data/que_hua_qiu_se_tu_juan_small.jpg' // local
-        // that.imageSrc['small'] = 'https://vis.pku.edu.cn/seal_visualization/assets/painting_images/que_hua_qiu_se_tu_juan/que_hua_qiu_se_tu_juan_small.jpg') // online
+        // 初始化painting_name_en
+        that.painting_name_en = DataProcess.getPaintingNameEn(that.painting_name)
+
+        that.imageSrc['small'] = 'data/' + that.painting_name_en + '_small.jpg' // local
+        // that.imageSrc['small'] = 'https://vis.pku.edu.cn/seal_visualization/assets/painting_images/que_hua_qiu_se_tu_juan/' + that.painting_name_en + '_small.jpg') // online
         
         that.getPaintingParams()
         let whole_data = Data.read_data() // 首先读入总体的
@@ -266,6 +303,8 @@ export default {
         that.data = DataProcess.getCollectorColor(that.data)
         that.cardList = SealCardFunc.SealCardMapping(that.data) // mapped seal pictures into list
         // console.log("seal_data", that.data)
+
+        that.detectFullImageScroll()
         that.initialize();
     },
 };
@@ -319,6 +358,8 @@ export default {
         display: flex;
         align-items: center;
         justify-content: center;
+
+        overflow-x: auto;
     }
 }
 

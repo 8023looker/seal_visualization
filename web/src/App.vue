@@ -303,7 +303,7 @@ body {
                 position: relative;
                 height: 100%;
                 width: 100%;
-                background-color: rgba(240, 255, 255, 1);
+                // background-color: rgba(240, 255, 255, 1);
                 // font-family: FZQINGKBYSJF;
             }
         }

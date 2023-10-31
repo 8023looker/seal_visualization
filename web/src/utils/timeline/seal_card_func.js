@@ -164,12 +164,15 @@ export function renderSealIconGroup(card_list, icon_size) { // here "index" is i
         let svg = d3.select(`#seal-icon-group-${card_list[i]['index']}`) // '#seal-circle-container'也行
                     .attr('width', container_width)
                     .attr('height', Math.ceil(seal_group.length / 6) * icon_size + icon_size * 0.3 * 1 + (Math.ceil(seal_group.length / 6) - 1) * icon_size * 0.4) // 按理来说应该是0.3 * 2
+        
+        // 首先清除此前所有元素
+        svg.selectAll('g').remove()
         let seal_icon = svg.selectAll('g')
                             .data(seal_group)
                             .join('g')
                             .attr('class', (d) => `seal-icon-rect-${d['seal_name']}`)
-                            .attr('transform', (d, i) => `translate(${i % 6 * (icon_size + gap)},${Math.floor(i / 6) * icon_size * (1 + 0.4) + icon_size * 0.3})`)
-                            
+                            .attr('transform', (d, i) => `translate(${i % 6 * (icon_size + gap)},${Math.floor(i / 6) * icon_size * (1 + 0.4) + icon_size * 0.3})`)                  
+    
         seal_icon.append('rect')
                  .attr('x', 0)
                  .attr('y', 0)

@@ -10,3 +10,9 @@ export function getCollectorColor(data) { // copied from timeline.vue
     }
     return data
 }
+
+export function getPaintingNameEn(painting_name) {
+    if (painting_name === '鹊华秋色图卷') {
+        return 'que_hua_qiu_se_tu_juan'
+    }
+}

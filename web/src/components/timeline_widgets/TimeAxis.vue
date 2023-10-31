@@ -11,7 +11,7 @@ import * as Data from "@/data/TimeLineData";
 // import { type_color } from "@/theme";
 import * as Translate from "@/theme/lang";
 // import * as RenderAxis from "@/data/timeline/timeline_full/render_axis"
-import * as DataProcess from "@/data/data_process"
+import * as DataProcess from "@/utils/data_process"
 
 const $ = require("jquery");
 const margin = {
