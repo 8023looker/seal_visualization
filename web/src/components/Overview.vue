@@ -72,14 +72,14 @@ export default {
         ...mapState(["language", "cur_view", "painting_name", "selection"]),
         detailSealInfo: {
             get() {
-            const self = this;
-            const tar = self.selection.entity !== null && self.selection.value;
-            if (!tar) return [];
-            let seal_pic_list = [];
-            // 或许可以考虑添加一些click position的信息
-            seal_pic_list = jsonCopy(self.cardList.filter((d) => tar.includes(d['index'])));
-            console.log(seal_pic_list);
-            return seal_pic_list;
+                const self = this
+                const tar = self.selection.entity !== null && self.selection.value
+                if (!tar) return []
+                let seal_pic_list = []
+                // 或许可以考虑添加一些click position的信息
+                seal_pic_list = jsonCopy(self.cardList.filter((d) => tar.includes(d['index'])))
+                console.log(seal_pic_list, self.selection.value)
+                return seal_pic_list
             },
         },
     },
@@ -87,7 +87,12 @@ export default {
         cur_view: function(newValue, oldValue) {
             const self = this
             if (newValue === 'overview' && newValue !== oldValue) {
-                self.renderUnselectedLayer() // 在切换到当前视图时需要重新刷新一遍(因为jQuery: $('.image-scroll-container'))
+                console.log('从其他视图切换到overview视图啦')
+
+                setTimeout(() => { // 需要设置延迟，否则$('.image-scroll-container').width()依然为0
+                    self.renderUnselectedLayer() // 在切换到当前视图时需要重新刷新一遍(因为jQuery: $('.image-scroll-container'))
+                    self.renderSealRect(self.cardList, self.resize_scale) // 框选印章
+                }, timeout_duration)
             }
         },
         imageParam: {
@@ -104,7 +109,7 @@ export default {
         selection: {
             handler: function(newVal, oldVal) {
                 const self = this
-                
+
             },
             deep: true
         },
@@ -207,6 +212,7 @@ export default {
                 setTimeout(() => {
                     self.renderUnselectedLayer()
                     self.renderSealRect(self.cardList, self.resize_scale) // 框选印章
+                    
                 }, timeout_duration)
             } else {
                 img.onload = function() {
@@ -238,6 +244,7 @@ export default {
         renderSealRect(seal_mapped_list, resize_scale) { // 框选印章
             const self = this
             let svg = d3.select('.seal-checkbox-svg') // select the svg item
+            svg.selectAll('.seal_rect_group').remove()
             let group = svg.append('g').attr('class', 'seal_rect_group')
             let seal_rect_group = group.selectAll('g')
                                         .data(seal_mapped_list)
@@ -267,6 +274,7 @@ export default {
         renderUnselectedLayer() {
             const self = this
             let svg = d3.select('.seal-checkbox-svg') // select the svg item
+            svg.selectAll('.unselected_layer').remove()
             let unselected_layer = svg.append('g').attr('class', 'unselected_layer')
             unselected_layer.append('rect')
                             .attr('x', 0)

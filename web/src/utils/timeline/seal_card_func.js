@@ -14,7 +14,7 @@ const margin = {
 
 let timeScale
 
-export function draw_seal_circle(seal_data, rem) {
+export function draw_seal_rect(seal_data, rem) { // 
     timeScale = d3.scaleLinear()
                     .domain(TimescaleParam.timeScale_param()['domain'])
                     .range(TimescaleParam.timeScale_param()['range'])
@@ -27,7 +27,7 @@ export function draw_seal_circle(seal_data, rem) {
                 .attr('class', 'seal-circle-svg')
                 .attr('width', parentDiv.clientWidth * (1 - margin.left - margin.right))
                 .attr('height', parentDiv.clientHeight)
-    console.log('seal_data', seal_data)
+    // console.log('seal_data', seal_data)
     let seal_group = svg.selectAll('g')
                         .data(seal_data['collectors'])
                         .join('g')
@@ -46,22 +46,26 @@ export function draw_seal_circle(seal_data, rem) {
                                           group_container_width = column_num * seal_circle_radius * 2 + (column_num - 1) * seal_circle_radius * 0.1 // 最后计算出来的坐标整体左移 group_container_width / 2 个单位
                                     return `translate(${Math.floor(i / 6) * seal_circle_radius * (2 + 0.1) - group_container_width / 2 - seal_circle_radius},${$('.seal-circle-svg').height() * 0.9 - ((i % 6) * seal_circle_radius * (2 + 0.5)) - seal_circle_radius * 1.1})`
                                 })
-    console.log($('.seal-circle-svg').height())                
-    single_seal.append('circle')
-                .attr('id', (d) => `${d['seal_name']}-circle`)      
-                .attr("r", seal_circle_radius) // basic version (too small)
-                // .attr("fill", '#A56752')
-                // .attr('fill', (d) => {
-                //     const group1Data = single_seal.select(function() {
-                //         return this.parentElement;
-                //     }).datum();
-                //     console.log('datum', group1Data)
-                //     return '#A56752'
-                // })
+    // console.log($('.seal-circle-svg').height())
+    // circle              
+    // single_seal.append('circle')
+    //             .attr('id', (d) => `${d['seal_name']}-circle`)      
+    //             .attr("r", seal_circle_radius) // basic version (too small)
+    //             // .attr("fill", '#A56752')
+    //             .attr('fill', (d) => d['collector_color'])
+    //             // .attr('stroke', 'white')
+    //             .append("title") // hover时的小小tooltip
+    //                 .text((d) => `${d.seal_name}`)
+    // rect
+    single_seal.append('rect')
+                .attr('id', (d) => `${d['seal_name']}-circle`)
+                .attr('x', 0)
+                .attr('y', 0)   
+                .attr("width", seal_circle_radius * 1.8)
+                .attr("height", seal_circle_radius * 1.8)
                 .attr('fill', (d) => d['collector_color'])
-                // .attr('stroke', 'white')
                 .append("title") // hover时的小小tooltip
-                    .text((d) => `${d.seal_name}`);
+                    .text((d) => `${d.seal_name}`)
 }
 
 export function SealCardMapping(seal_data) { // 将所有的印章图片加载成为一个list
@@ -87,7 +91,7 @@ export function SealCardMapping(seal_data) { // 将所有的印章图片加载�
         for (let j in cur_collector['seals']) {
             const cur_seal = cur_collector['seals'][j],
                   seal_name = cur_seal['seal_name'],
-                  series_num = cur_seal['seal_pic'].length
+                  series_num = cur_seal['seal_pic'].length // 该印章所拥有的印章图片个数
 
             // 首次遍历，记录 seal_pic_index
             let seal_pic_index_list = []
@@ -196,3 +200,25 @@ export function renderSealIconGroup(card_list, icon_size) { // here "index" is i
     }
 }
 
+export function renderSealPicIcon(seal_mapped_list, unit_pixel) { // unit_pixel * 0.1 = (card_width * 0.9 / 120) * 0.1
+    const circle_radius = unit_pixel * 120 * (0.1 * 0.8) / (0.9 * 2)
+    for (let i in seal_mapped_list) {
+        const cur_seal_pic = seal_mapped_list[i]
+        let svg = d3.select(`#seal-pic-icon-svg-${cur_seal_pic['index']}`)
+                    .attr('height', (cur_seal_pic['series_list'].length + 1) * circle_radius * 2)
+        svg.selectAll('g').remove()
+        let seal_pic_group = svg.append('g')
+                                .attr('class', 'seal_pic_group')
+        seal_pic_group.selectAll('circle')
+                        .data(cur_seal_pic['series_list'])
+                        // .enter()
+                        // .append('circle')
+                        .join('circle')
+                        .attr('cx', circle_radius * (1 + 0.35))
+                        .attr('cy', (d, i) => (2 * i + 1) * circle_radius)
+                        .attr('r', circle_radius)
+                        .attr('fill', TypeColor.color_list[cur_seal_pic['collector_name']])
+                        .attr('fill-opacity', (d, i) => cur_seal_pic['series_list'].indexOf(cur_seal_pic['index']) === i ? 1 : 0.5)
+                        .attr('stroke', 'none')
+    }
+}

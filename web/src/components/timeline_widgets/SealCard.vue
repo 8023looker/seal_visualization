@@ -6,19 +6,20 @@
     </el-dialog>
     <div class="seal-card-container" id="seal-card-container">
         <div v-for="(item, index) in cardList" :key="index" class="seal-card"
-            :id="'seal-card-' + item['seal_name'] + '-' + item['index']"
             v-if="sealContainerShow"
-            :style="{left: (containerParam.x + containerParam.card_width * 0.05 + containerParam.card_width * index - containerParam.unit_pixel * 2) + 'px',
-                     top: '45%', height: containerParam.card_height * 1.1 + 'px', width: (containerParam.card_width * 0.9 + containerParam.unit_pixel * 4) + 'px'}">
-            <div class="seal-index-rect" :style="{paddingLeft: containerParam.unit_pixel * 2 + 'px', paddingRight: containerParam.unit_pixel * 2 + 'px', height: containerParam.unit_pixel * 18 + 'px', fontSize: containerParam.unit_pixel * 16 + 'px'}">{{ item['index'] }}</div>
-            <div class="card-rect" 
+            :style="{left: (containerParam.x + containerParam.card_width * (index + 0.05) * 12.4 / 10 - containerParam.unit_pixel * 2) + 'px',
+                     top: '2%', height: containerParam.card_height * 1.1 + 'px', width: (containerParam.card_width * (0.9 + 0.1) + containerParam.unit_pixel * 4) + 'px'}">
+            <div class="seal-index-rect"
+                :style="{paddingLeft: containerParam.unit_pixel * 2 + 'px', paddingRight: containerParam.unit_pixel * 2 + 'px', height: containerParam.unit_pixel * 18 + 'px', fontSize: containerParam.unit_pixel * 16 + 'px'}">{{ item['index'] }}</div>
+            <div class="card-rect"
+                :id="'seal-card-' + item['seal_name'] + '-' + item['index']"
                 :style="{top: containerParam.card_height * 0.05 + 'px', height: containerParam.card_height + 'px', left: containerParam.unit_pixel * 0 + 'px', width: containerParam.card_width * 0.9 + 'px'}">
                 <div class="seal-name" 
                     :style="{fontSize: item.seal_name.length <= 6 ? containerParam.card_width * 0.9 / 6.5 + 'px' : containerParam.card_width * 0.9 / (item.seal_name.length + 0.5) + 'px',
                             top: containerParam.unit_pixel * 15 + 'px'}">
                         {{ item['seal_name'] }}
                 </div>
-                <div class="info-row" :style="{top: containerParam.unit_pixel * (45 - 2) + 'px', height: containerParam.unit_pixel * (60 + 4) + 'px', left: '2.5%', width: '95%'}">
+                <div class="pic-row" :style="{top: containerParam.unit_pixel * (45 - 2) + 'px', height: containerParam.unit_pixel * (60 + 4) + 'px', left: '2.5%', width: '95%'}">
                     <!-- <div class="prev-next-arrow" :style="{height: containerParam.unit_pixel * 20 + 'px'}">
                         <svg width="16" height="19" viewBox="0 0 16 19" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M13.877 2L6.78967 9.76364L13.877 17.1163" stroke="#8F7B6C" stroke-width="3.22" stroke-linecap="round" stroke-linejoin="round"/>
@@ -47,7 +48,7 @@
 
                 </div>
                 <div class="info-row" :style="{top: containerParam.unit_pixel * 120 + 'px', left: '2.5%', width: '95%'}">
-                    <div class="agent-group" :style="{gap: containerParam.unit_pixel * 2 + 'px'}">           
+                    <div class="agent-time-group" :style="{gap: containerParam.unit_pixel * 2 + 'px'}">           
                         <div class="agent-icon">
                             <svg width="11" height="14" viewBox="0 0 11 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M8.94846 13H1.90909C1.31263 13 0.881532 12.2323 1.02917 11.4469C1.37759 9.58661 2.352 8.05709 3.62169 7.30709C3.62169 7.30709 3.62759 7.30709 3.62759 7.30118C2.65909 6.70472 2.01539 5.63583 2.01539 4.41339C2.01539 2.52953 3.54492 1 5.42878 1C7.31263 1 8.84216 2.52953 8.84216 4.41339C8.84216 5.63583 8.19846 6.70472 7.22996 7.30118C7.22996 7.30709 7.23586 7.30709 7.23586 7.30709C8.50555 8.05709 9.47996 9.58661 9.82838 11.4469C9.97602 12.2323 9.54492 13 8.94846 13Z" stroke="#8F7B6C" stroke-linejoin="round"/>
@@ -57,12 +58,24 @@
                     </div>
                     <div class="life-span" :style="{fontSize: containerParam.unit_pixel * 11 + 'px'}">{{ item['life_span'][0].toString() + '-' + item['life_span'][1].toString() }}</div>
                 </div>
-                <div class="seal-icon-group" 
+                <div class="info-row" :style="{top: containerParam.unit_pixel * 135 + 'px', left: '2.5%', width: '95%'}">
+                    <div class="agent-time-group" :style="{gap: containerParam.unit_pixel * 2 + 'px'}">           
+                        <div class="time-icon">
+                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M11.1444 9.08594C11.0154 9.30091 10.7383 9.36779 10.5281 9.23881C10.3132 9.10983 10.2463 8.83276 10.3753 8.62257C10.8482 7.82958 11.1014 6.92672 11.1014 5.99997C11.1014 3.18151 8.81804 0.898087 5.99971 0.898087C3.18138 0.898087 0.898047 3.18151 0.898047 5.99997C0.898047 8.81843 3.18138 11.1019 5.99971 11.1019C6.92164 11.1019 7.82923 10.8535 8.62218 10.3805C8.83714 10.2516 9.10943 10.3232 9.2384 10.5334C9.36737 10.7436 9.29572 11.0206 9.08554 11.1496C8.15406 11.7085 7.08883 12.0047 5.99971 11.9999C2.68459 11.9999 0 9.31524 0 5.99997C0 2.6847 2.68459 0 5.99971 0C9.31483 0 11.9994 2.6847 11.9994 5.99997C11.9946 7.10347 11.6985 8.15919 11.1444 9.08594ZM3.425 7.9299L5.54113 5.80889V3.29616C5.54113 3.04775 5.74176 2.84712 5.99015 2.84712C6.23855 2.84712 6.43918 3.04775 6.43918 3.29616V5.99519C6.43918 6.11462 6.39141 6.22927 6.30543 6.31526L4.05553 8.56524C3.88357 8.742 3.59696 8.74678 3.42021 8.57481C3.24347 8.40283 3.23869 8.1162 3.41066 7.93945C3.42021 7.93945 3.425 7.93468 3.425 7.9299Z" fill="#8F7B6C"/>
+                            </svg>
+                        </div>
+                        <div class="time-span" :style="{fontSize: containerParam.unit_pixel * 12 + 'px'}">{{ item['stamped_year'][0].toString() + '-' + item['stamped_year'][1].toString() }}</div>
+                    </div>
+                </div>
+                <!-- <div class="seal-icon-group" 
                 :style="{top: containerParam.unit_pixel * 135 + 'px', height: containerParam.unit_pixel * 30 + 'px'}">
                     <svg :id="'seal-icon-group-' + item['index']"></svg>
-                </div>
+                </div> -->
             </div>
-            <div class="stamped-year" :style="{fontSize: containerParam.unit_pixel * 12 + 'px', top: containerParam.unit_pixel * (165 + 15) + 'px'}">{{ item['stamped_year'][0].toString() + '-' + item['life_span'][1].toString() }}</div>
+            <div class="seal-pic-icon-container" :style="{top: containerParam.card_height * 0.05 + 'px', left: (containerParam.card_width * 0.9 + containerParam.unit_pixel * 2) + 'px', width: containerParam.card_width * 0.1 + 'px', height: containerParam.card_height + 'px'}">
+                <svg class="seal-pic-icon-svg" :id="'seal-pic-icon-svg-' + item['index']"></svg>
+            </div>
         </div>
     </div>
     
@@ -73,6 +86,7 @@
 import { mapState } from "vuex";
 import * as SealCardFunc from "@/utils/timeline/seal_card_func";
 import * as RenderLinkFunc from "@/utils/timeline/render_link_func";
+import * as HandleTimelineData from "@/utils/timeline/handle_timeline_data";
 
 const d3 = require("d3");
 const $ = require("jquery");
@@ -85,7 +99,7 @@ const margin = {
 }
 const time_duration = 1000,
       timeout_duration = 100,
-      seal_card_num = 12
+      seal_card_num = 10
 
 
 export default {
@@ -96,7 +110,7 @@ export default {
         return {
             timeScale: null,
             cardList: [],
-            containerParam: { // 当前绘制窗口的宽度
+            containerParam: { // 当前绘制窗口的宽度(seal container)
                 x: 0,
                 width: 0,
                 card_width: 0, // includes the gap between seal cards
@@ -114,15 +128,26 @@ export default {
     },
     props: ["canvas_width", "canvas_height", "data"],
     computed: {
-        ...mapState(["language", "cur_view", "painting_name", "rem"]),
+        ...mapState(["language", "cur_view", "painting_name", "rem", "selection"]),
        
     },
     watch: {
-        cur_view: function(newValue, oldValue) {
+        cur_view: function(newVal, oldVal) {
             const self = this
-            if (newValue === 'timeline' && newValue !== oldValue) {
+            if (newVal === 'timeline' && newVal !== oldVal) {
+                // console.log(self.selection)
                 self.renderSealCard()
             }
+        },
+        selection: {
+            handler: function(newVal, oldVal) {
+                const self = this
+                if (newVal === 'timeline' && newVal !== oldVal) {
+                    console.log('selection', newVal)
+                    self.renderSealCard()
+                }
+            },
+            deep: true
         },
     },
     methods: {
@@ -142,15 +167,17 @@ export default {
             setTimeout(() => {
                 self.containerParam = SealCardFunc.getSealCardContainerSize() // {x: , width: }
 
-                self.containerParam['card_width'] = self.containerParam['width'] / seal_card_num
+                self.containerParam['card_width'] = self.containerParam['width'] / (seal_card_num + 2) // 多留一些空隙
                 self.containerParam['card_height'] = self.containerParam['card_width'] * 0.9 * 175 / 120
                 self.containerParam['unit_pixel'] = self.containerParam['card_height'] / 175
 
-                SealCardFunc.draw_seal_circle(self.data, self.containerParam['unit_pixel'] * 12) // 绘制seal circle, self.rem
-                self.cardList = SealCardFunc.SealCardMapping(self.data) // mapped seal pictures into list
+                SealCardFunc.draw_seal_rect(self.data, self.containerParam['unit_pixel'] * 12) // 绘制seal circle, rem
+                self.cardList = SealCardFunc.SealCardMapping(self.data) // mapped seal pictures into list (In this step all seal pictures are included.)
+                self.cardList = HandleTimelineData.getCardListSubset(self.cardList, self.selection)
                 self.sealContainerShow = true
 
-                setTimeout(() => { // 渲染seal-icon-group
+                setTimeout(() => { // 渲染seal-icon-group，以及seal card右边的seal pic circle
+                    SealCardFunc.renderSealPicIcon(self.cardList, self.containerParam['unit_pixel'])
                     self.containerParam['sealIconSize'] = $('.seal-icon-group').height() / 3
                     SealCardFunc.renderSealIconGroup(self.cardList, self.containerParam['sealIconSize'])
 
@@ -183,7 +210,7 @@ export default {
     position: absolute;
     left: 0%;
     width: 100%;
-    top: 10%;
+    top: 2%;
     height: 69%;
     overflow-x: auto;
     &::-webkit-scrollbar {
@@ -210,7 +237,7 @@ export default {
             border: 2px solid #8F7B6C;
             // border-radius: 5px;
             // clip-path: polygon(0% 0%, 25% 0%, 25% 6%, 80% 6%, 80% 0%, 100% 0%, 100% 100%, 0% 100%); // 上开口
-            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 75% 100%, 75% 95%, 25% 95%, 25% 100%, 0% 100%); // 下开口
+            // clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 75% 100%, 75% 95%, 25% 95%, 25% 100%, 0% 100%); // 下开口
             .seal-name{
                 display: flex; // new
                 // flex-direction: row;
@@ -224,14 +251,20 @@ export default {
                 position: relative;
                 color: #724A2B;
             }
+            .pic-row {
+                position: absolute;
+                display: flex;
+                flex-direction: row;
+                justify-content: center; 
+                align-items: center; // new
+            }
             .info-row {
                 position: absolute;
                 display: flex;
                 flex-direction: row;
-                // justify-content: space-between; // 多个item时使用（加左右箭头时）
-                justify-content: center; 
+                justify-content: space-between; // 多个item时使用（加左右箭头时）
                 align-items: center; // new
-                .agent-group {
+                .agent-time-group {
                     display: flex;
                     flex-direction: row;
                     align-items: center; // new
@@ -256,6 +289,17 @@ export default {
             position: absolute;
             color: #724A2B;
         }    
+    }
+    .seal-pic-icon-container {
+        position: absolute;
+        overflow-y: auto;
+        .seal-pic-icon-svg {
+            position: absolute;
+            left: 0%;
+            top: 0%;
+            width: 100%;
+            // height: 100%;
+        }
     }
 }
 .seal-circle-container {

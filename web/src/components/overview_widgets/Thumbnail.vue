@@ -50,6 +50,7 @@ export default {
             const self = this
             if (newVal === 'overview' && newVal !== oldVal) {
                  // 在切换到当前视图时需要重新刷新一遍(因为jQuery: $('.image-scroll-container'))
+                 self.renderThumbnailRect(0, 0, 1)
             }
         },
         resize_scale: function(newVal, oldVal) {
@@ -57,7 +58,7 @@ export default {
         },
         original_painting: function(newVal, oldVal) {
             const self = this
-            if (newVal.complete) {
+            if (newVal.complete && self.cur_view === 'overview') {
                 self.getThumbnailParams(newVal)
                 self.renderThumbnailRect(0, 0, 1)
             }

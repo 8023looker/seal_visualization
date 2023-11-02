@@ -51,7 +51,7 @@ export function card2circleLink(seal_pic_list, unit_pixel) {
         let card_pos = $(`#seal-card-${seal['seal_name']}-${seal['index']}`).offset(), // jQuery相对于整个页面的offset
             circle_pos = $(`#${seal['seal_name']}-circle`).offset()
         let card_point_pos = {
-            top: card_pos.top + $(`#seal-card-${seal['seal_name']}-${seal['index']}`).height(),
+            top: card_pos.top + $(`#seal-card-${seal['seal_name']}-${seal['index']}`).height() + unit_pixel * 2,
             left: card_pos.left + $(`#seal-card-${seal['seal_name']}-${seal['index']}`).width() / 2
             },
             circle_point_pos = {
@@ -103,10 +103,10 @@ export function card2circleLink(seal_pic_list, unit_pixel) {
             link_group.append("path")
                         .attr("d", pathData.toString()) // 设置路径的数据
                         .attr('id', `${seal['seal_name']}-card2circle-${seal['index']}`)
-                        .attr("stroke", "#8F7B6C") // 设置线段颜色
+                        .attr("stroke", "#D3BEAF") // 设置线段颜色
                         .attr("stroke-width", 0.5) // 设置线段宽度
                         .attr("fill", "none") // 设置填充为无填充
-                        .style('opacity', 0.5)
+                        // .style('opacity', 0.5)
                         // .style('visibility', () => {
                         //     if (card_pos.left < myDiv.getBoundingClientRect().left || card_pos.left + 0.6 * rem > myDiv.offsetWidth + myDiv.getBoundingClientRect().left) { // 0.3
                         //         return 'hidden'

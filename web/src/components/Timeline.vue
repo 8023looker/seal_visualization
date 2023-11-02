@@ -14,13 +14,13 @@
                 :data="data"
             ></TimeAxis>
         </div>
-        <!-- <div class="collector-card">
+        <div class="collector-card">
             <CollectorCard
                 :canvas_width="canvas_width"
                 :canvas_height="canvas_height"
                 :data="data"
             ></CollectorCard>
-        </div> -->
+        </div>
         <div class="link-container"></div>
     </div>
 </template>
@@ -32,7 +32,7 @@ const d3 = require("d3");
 const $ = require("jquery");
 import TimeAxis from "./timeline_widgets/TimeAxis.vue";
 import SealCard from "./timeline_widgets/SealCard.vue";
-// import CollectorCard from "./timeline_widgets/CollectorCard.vue";
+import CollectorCard from "./timeline_widgets/CollectorCard.vue";
 
 import * as Data from "@/data/Data.js";
 import * as TypeColor from "@/theme/type_color";
@@ -43,7 +43,7 @@ export default {
     components: {
         TimeAxis,
         SealCard,
-        // CollectorCard
+        CollectorCard
     },
     data() {
         return {
@@ -91,8 +91,8 @@ export default {
     top: 0%;
 
     $axis-panel-height: 10%;
-    $seal-card-height: 90%; // 50%
-    $collector-card-height: 35%;
+    $seal-card-height: 35%; // 90%
+    $collector-card-height: 55%;
     .seal-card {
         position: absolute;
         height: $seal-card-height;
@@ -107,17 +107,18 @@ export default {
         height: $axis-panel-height;
         left: 0.5%;
         width: 99%;
-        top: $seal-card-height + 1.5%;
+        top: $seal-card-height + 0.5%;
         z-index: 1;
     }
-    // .collector-card {
-    //     position: absolute;
-    //     height: $collector-card-height;
-    //     left: 0.5%;
-    //     width: 99%;
-    //     top: $axis-panel-height + $seal-card-height + 3%;
-    //     background-color: rgba(247, 171, 0, 0.15);
-    // }
+    .collector-card {
+        position: absolute;
+        height: $collector-card-height;
+        left: 0.5%;
+        width: 99%;
+        top: $axis-panel-height + $seal-card-height;
+        overflow-x: auto;
+        // background-color: rgba(247, 171, 0, 0.15);
+    }
     .link-container {
         position: absolute;
         left: 0.5%;
