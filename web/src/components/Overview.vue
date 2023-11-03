@@ -9,6 +9,7 @@
                 <OverviewCard v-for="(item, index) in detailSealInfo"
                     :seal_detail="JSON.parse(JSON.stringify(item))"
                     :resize_scale="resize_scale"
+                    :cardList="cardList"
                 ></OverviewCard>
             </div>
        </div>
@@ -262,12 +263,16 @@ export default {
                             .on('click', (event) => {
                                 // console.log('当前click印章图片', event.srcElement.__data__.seal_name, event.srcElement.__data__.index)
                                 let selected_seal_pic_list = self.selection['value']
-                                selected_seal_pic_list.push(event.srcElement.__data__.index)   
-                                selected_seal_pic_list = [...new Set(selected_seal_pic_list)] // 去重
-                                self.$store.commit("changeSelection", {
-                                    entity: "seal_pic",
-                                    value: selected_seal_pic_list
-                                })
+                                if (!selected_seal_pic_list.includes(event.srcElement.__data__.index)) {
+                                    selected_seal_pic_list = [...new Set(selected_seal_pic_list)] // 去重
+                                    selected_seal_pic_list.push(event.srcElement.__data__.index)
+                                    self.$store.commit("changeSelection", {
+                                        entity: "seal_pic",
+                                        value: selected_seal_pic_list
+                                    })
+                                } else {
+                                    // 没有操作
+                                }
                             })
 
         },
@@ -297,8 +302,8 @@ export default {
         // 初始化painting_name_en
         that.painting_name_en = DataProcess.getPaintingNameEn(that.painting_name)
 
-        that.imageSrc['small'] = 'data/' + that.painting_name_en + '_small.jpg' // local
-        // that.imageSrc['small'] = 'https://vis.pku.edu.cn/seal_visualization/assets/painting_images/que_hua_qiu_se_tu_juan/' + that.painting_name_en + '_small.jpg') // online
+        // that.imageSrc['small'] = 'data/' + that.painting_name_en + '_small.jpg' // local
+        that.imageSrc['small'] = 'https://vis.pku.edu.cn/seal_visualization/assets/painting_images/que_hua_qiu_se_tu_juan/' + that.painting_name_en + '_small.jpg' // online
         
         that.getPaintingParams()
         let whole_data = Data.read_data() // 首先读入总体的

@@ -76,6 +76,7 @@ export default {
         getThumbnailParams(original_img) { // 在original_img.complete的情况下执行该操作
             const self = this
             self.imageSrc['origin'] = 'data/' + self.painting_name_en + '.jpg' // image href(local)
+            // self.imageSrc['origin'] = 'https://vis.pku.edu.cn/seal_visualization/assets/painting_images/que_hua_qiu_se_tu_juan/' + self.painting_name_en + '.jpg' // image href (online)
             self.thumbnail_resize_scale = $('.main-panel').height() * 0.1 / original_img.height // $('.thumbnail-container') = $('main-panel') * 0.1
             
             self.imageSrc['origin'] = original_img.src
@@ -140,8 +141,8 @@ export default {
 
         // 初始化painting_name_en
         that.painting_name_en = DataProcess.getPaintingNameEn(that.painting_name)
-        that.imageSrc['small'] = 'data/' + that.painting_name_en + '_small.jpg' // local
-        // that.imageSrc['small'] = 'https://vis.pku.edu.cn/seal_visualization/assets/painting_images/que_hua_qiu_se_tu_juan/' + that.painting_name_en + '_small.jpg') // online
+        // that.imageSrc['small'] = 'data/' + that.painting_name_en + '_small.jpg' // local
+        that.imageSrc['small'] = 'https://vis.pku.edu.cn/seal_visualization/assets/painting_images/que_hua_qiu_se_tu_juan/' + that.painting_name_en + '_small.jpg' // online
 
         that.initialize()
 

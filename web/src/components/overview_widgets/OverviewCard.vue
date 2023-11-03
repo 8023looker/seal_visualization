@@ -15,8 +15,8 @@
                         top: containerParam.unit_pixel * 15 + 'px'}">
                     {{ seal_detail['seal_name'] }}
             </div>
-            <div class="info-row-pic" :style="{top: containerParam.unit_pixel * (45 - 2) + 'px', height: containerParam.unit_pixel * (60 + 4) + 'px', left: '2.5%', width: '95%'}">
-                <div class="prev-next-arrow" :style="{height: containerParam.unit_pixel * 20 + 'px'}">
+            <div class="info-row" :style="{top: containerParam.unit_pixel * (45 - 2) + 'px', height: containerParam.unit_pixel * (60 + 4) + 'px', left: '2.5%', width: '95%'}">
+                <div class="prev-next-arrow" :style="{height: containerParam.unit_pixel * 20 + 'px'}" @click="clickPrevNext('prev')">
                     <svg width="16" height="19" viewBox="0 0 16 19" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M13.877 2L6.78967 9.76364L13.877 17.1163" stroke="#8F7B6C" stroke-width="3.22" stroke-linecap="round" stroke-linejoin="round"/>
                         <path d="M8.96387 2L1.87658 9.76364L8.96387 17.1163" stroke="#8F7B6C" stroke-width="3.22" stroke-linecap="round" stroke-linejoin="round"/>
@@ -27,7 +27,7 @@
                     <img :src="seal_detail.image_href" style="{max-width: 100%; max-height: 100%; margin-top: 0.1em; margin-bottom: 0em, cursor: 'pointer'}"
                         @click="fullImageModel.show =true, fullImageModel.src=seal_detail.image_href, fullImageModel.label = seal_detail.seal_name">
                 </div>
-                <div class="prev-next-arrow" :style="{height: containerParam.unit_pixel * 20 + 'px'}">
+                <div class="prev-next-arrow" :style="{height: containerParam.unit_pixel * 20 + 'px'}" @click="clickPrevNext('next')">
                     <svg width="16" height="19" viewBox="0 0 16 19" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M2 2L9.08728 9.76364L2 17.1163" stroke="#8F7B6C" stroke-width="3.22" stroke-linecap="round" stroke-linejoin="round"/>
                         <path d="M6.91309 2L14.0004 9.76364L6.91309 17.1163" stroke="#8F7B6C" stroke-width="3.22" stroke-linecap="round" stroke-linejoin="round"/>
@@ -40,10 +40,10 @@
                 </div> -->
             </div>
             <div class="seal-page"
-                :style="{top: containerParam.unit_pixel * (105 + 2) + 'px', height: containerParam.unit_pixel * (120 - 107 - 5) + 'px'}">
-
+                :style="{top: containerParam.unit_pixel * (105 + 2) + 'px', height: containerParam.unit_pixel * (120 - 107 - 5) + 'px', left: '2.5%', width: '95%', fontSize: containerParam.unit_pixel * 11 + 'px'}">
+                {{ (seal_detail['series_list'].indexOf(seal_detail['index']) + 1) + '/' + seal_detail['series_list'].length }}
             </div>
-            <div class="info-row-agent" :style="{top: containerParam.unit_pixel * 120 + 'px', left: '2.5%', width: '95%'}">
+            <div class="info-row" :style="{top: containerParam.unit_pixel * 120 + 'px', left: '2.5%', width: '95%'}">
                 <div class="agent-group" :style="{gap: containerParam.unit_pixel * 2 + 'px'}">           
                     <div class="agent-icon">
                         <svg width="11" height="14" viewBox="0 0 11 14" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -54,6 +54,16 @@
                 </div>
                 <div class="life-span" :style="{fontSize: containerParam.unit_pixel * 11 + 'px'}">{{ seal_detail['life_span'][0].toString() + '-' + seal_detail['life_span'][1].toString() }}</div>
             </div>
+            <div class="info-row" :style="{top: containerParam.unit_pixel * 135 + 'px', left: '2.5%', width: '95%'}">
+                <div class="agent-time-group" :style="{gap: containerParam.unit_pixel * 2 + 'px'}">           
+                    <div class="time-icon">
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M11.1444 9.08594C11.0154 9.30091 10.7383 9.36779 10.5281 9.23881C10.3132 9.10983 10.2463 8.83276 10.3753 8.62257C10.8482 7.82958 11.1014 6.92672 11.1014 5.99997C11.1014 3.18151 8.81804 0.898087 5.99971 0.898087C3.18138 0.898087 0.898047 3.18151 0.898047 5.99997C0.898047 8.81843 3.18138 11.1019 5.99971 11.1019C6.92164 11.1019 7.82923 10.8535 8.62218 10.3805C8.83714 10.2516 9.10943 10.3232 9.2384 10.5334C9.36737 10.7436 9.29572 11.0206 9.08554 11.1496C8.15406 11.7085 7.08883 12.0047 5.99971 11.9999C2.68459 11.9999 0 9.31524 0 5.99997C0 2.6847 2.68459 0 5.99971 0C9.31483 0 11.9994 2.6847 11.9994 5.99997C11.9946 7.10347 11.6985 8.15919 11.1444 9.08594ZM3.425 7.9299L5.54113 5.80889V3.29616C5.54113 3.04775 5.74176 2.84712 5.99015 2.84712C6.23855 2.84712 6.43918 3.04775 6.43918 3.29616V5.99519C6.43918 6.11462 6.39141 6.22927 6.30543 6.31526L4.05553 8.56524C3.88357 8.742 3.59696 8.74678 3.42021 8.57481C3.24347 8.40283 3.23869 8.1162 3.41066 7.93945C3.42021 7.93945 3.425 7.93468 3.425 7.9299Z" fill="#8F7B6C"/>
+                        </svg>
+                    </div>
+                    <div class="time-span" :style="{fontSize: containerParam.unit_pixel * 12 + 'px'}">{{ seal_detail['stamped_year'][0].toString() + '-' + seal_detail['stamped_year'][1].toString() }}</div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -61,6 +71,7 @@
 <script>
 import { mapState } from "vuex";
 import * as SealCardFunc from "@/utils/timeline/seal_card_func";
+import * as OverviewFunction from "@/utils/overview/overview_function"
 
 const d3 = require("d3");
 const $ = require("jquery");
@@ -95,10 +106,10 @@ export default {
                 show: false,
                 src: null,
                 label: null
-            }
+            },
         };
     },
-    props: ["seal_detail", "resize_scale"],
+    props: ["seal_detail", "resize_scale", "cardList"],
     computed: {
         ...mapState(["language", "cur_view", "painting_name", "rem", "selection"]),
         
@@ -133,6 +144,14 @@ export default {
                 self.sealContainerShow = true
 
             }, timeout_duration)
+        },
+        clickPrevNext(button_choice) {
+            const self = this
+            let selected_seal_pic_list = OverviewFunction.clickPrevNextButton(self.seal_detail, self.cardList, self.resize_scale, self.selection, button_choice)
+            self.$store.commit("changeSelection", {
+                entity: "seal_pic",
+                value: selected_seal_pic_list
+            })
         },
     },
     mounted() {
@@ -180,15 +199,11 @@ export default {
             position: relative;
             color: #724A2B;
         }
-        .info-row-pic {
+        .seal-page {
             position: absolute;
-            display: flex;
-            flex-direction: row;
-            // justify-content: space-between; // 多个item时使用（加左右箭头时）
-            justify-content: center; 
-            align-items: center; // new
+            // color: #8F7B6C;
         }
-        .info-row-agent {
+        .info-row {
             position: absolute;
             display: flex;
             flex-direction: row;
@@ -196,6 +211,11 @@ export default {
             // justify-content: center; 
             align-items: center; // new
             .agent-group {
+                display: flex;
+                flex-direction: row;
+                align-items: center; // new
+            }
+            .agent-time-group {
                 display: flex;
                 flex-direction: row;
                 align-items: center; // new
