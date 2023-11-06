@@ -25,13 +25,13 @@ export default {
     },
     data() {
         return {
-            views: ["overview", "abstract_layout", "timeline"],
+            views: ["overview", "layout", "timeline"],
             view_names: {
                 overview: {
                     zh: "总览",
                     en: "Overview",
                 },
-                abstract_layout: {
+                layout: {
                     zh: "抽象图",
                     en: "Abstract Layout",
                 },

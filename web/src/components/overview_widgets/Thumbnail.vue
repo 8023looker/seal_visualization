@@ -47,10 +47,23 @@ export default {
     },
     watch: {
         cur_view: function(newVal, oldVal) {
-            const self = this
+            const self = this;
             if (newVal === 'overview' && newVal !== oldVal) {
-                 // 在切换到当前视图时需要重新刷新一遍(因为jQuery: $('.image-scroll-container'))
-                 self.renderThumbnailRect(0, 0, 1)
+                // 使用 $nextTick 来确保 DOM 更新完成
+                this.$nextTick(() => {
+                    // 定义一个函数来检查宽度是否大于 0
+                    const checkWidth = () => {
+                        if ($('.thumbnail-rect-svg').width() > 0) {
+                            // 宽度大于 0 时执行需要的操作
+                            self.renderThumbnailRect(0, 0, 1)
+                        } else {
+                            // 宽度不大于 0 时继续检查
+                            setTimeout(checkWidth, timeout_duration) // 每 timeout_duration(100) 毫秒检查一次
+                        }
+                    }
+                    // 初始调用检查宽度函数
+                    checkWidth()
+                })
             }
         },
         resize_scale: function(newVal, oldVal) {

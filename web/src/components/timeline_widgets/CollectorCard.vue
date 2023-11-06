@@ -116,7 +116,7 @@ export default {
                 setTimeout(() => { // 渲染seal-icon-group
                     // 绘制seal_ratio
                     self.containerParam['sealIconSize'] = $('.seal-icon-group').height() / 3
-                    console.log('self.containerParam', self.containerParam['sealIconSize'])
+                    // console.log('self.containerParam', self.containerParam['sealIconSize'])
                     CollectorCardFunc.renderCollectorSealIconGroup(self.data['collectors'], self.containerParam['sealIconSize'])
                     CollectorCardFunc.renderSealRatio(self.data['collectors'], self.cardList) // collector_list, seal_mapped_list
                 }, timeout_duration)

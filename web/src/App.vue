@@ -26,11 +26,13 @@
                         :canvas_width="canvas_width"
                         :canvas_height="canvas_height"
                     ></Timeline>
-                    <!-- <GeoMap
-                        v-show="showGeoMap"
+                    <LayoutView
+                        v-show="
+                            cur_view === 'layout' || overlay_view === 'layout'
+                        "
                         :canvas_width="canvas_width"
                         :canvas_height="canvas_height"
-                    ></GeoMap> -->
+                    ></LayoutView>
                 </div>
             </div>
         </div> 
@@ -44,9 +46,10 @@ const $ = require("jquery");
 
 import Title from "./components/Title.vue";
 import SwitchView from "./components/SwitchView.vue";
-import Timeline from "./components/Timeline.vue";
 import SwitchLanguage from "./components/SwitchLanguage.vue";
+import Timeline from "./components/Timeline.vue";
 import Overview from "./components/Overview.vue";
+import LayoutView from "./components/LayoutView.vue";
 // import TimeAxis from "./components/TimeAxis.vue";
 
 
@@ -79,10 +82,11 @@ export default {
     },
     components: {
         SwitchView,
-        Timeline,
         Title,
         SwitchLanguage,
+        Timeline,
         Overview,
+        LayoutView,
         // TimeAxis,
     },
     computed: {
@@ -90,17 +94,7 @@ export default {
 
     },
     watch: {
-        showGeoMap: {
-            handler: function (newVal) {
-                // this.renderComponent = false;
-                // setTimeout(() => {
-                //     this.renderComponent = true;
-                // }, 500);
-                console.log("current view changed to " + newVal);
-                // debugger;
-            },
-            // flush: 'post'
-        },
+
     },
     methods: {
         setRem() {
@@ -267,25 +261,6 @@ body {
             // font-family: FZQINGKBYSJF;
             background-color: rgba(13, 79, 137, 0.05);
         }
-
-        // .bottom-panel {
-        //     position: absolute;
-        //     height: $bottom-panel-height;
-        //     left: $left-panel-width;
-        //     width: calc(100% - $left-panel-width);
-        //     bottom: 0%;
-        //     background-color: rgba(127, 255, 212, 0.119);
-        //     display: flex;
-        //     flex-direction: row;
-
-        //     .time-axis {
-        //         position: relative;
-        //         // width: 100vw - $switch-lang-width;
-        //         width: 100%;
-        //         height: 100%;
-        //         // background-color: rgba(176, 196, 222, 0.212);
-        //     }
-        // }
 
         .main-panel {
             position: absolute;

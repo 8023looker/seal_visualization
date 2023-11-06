@@ -9,7 +9,7 @@ export default createStore({
     state: {
         rem: null,
         language: "zh",
-        cur_view: "timeline", // "timeline", "overview"
+        cur_view: "layout", // "timeline", "overview", "layout"
         overlay_view: null,
         overlay_duration: 2000,
         transition: {
@@ -24,6 +24,11 @@ export default createStore({
 
         // seal visualization
         painting_name: '鹊华秋色图卷',
+        painting_pic: {
+            loaded: false,
+            width: null,
+            height: null
+        }
     },
     mutations: {
         changeRem(state, payload) {
@@ -101,6 +106,9 @@ export default createStore({
         changeSelection(state, payload) {
             if (debug) console.log("changeSelection", payload);
             state.selection = payload;
+        },
+        changePaintingPic(state, payload) {
+            state.painting_pic = payload
         },
     },
     actions: {},

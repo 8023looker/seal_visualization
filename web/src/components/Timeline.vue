@@ -55,6 +55,14 @@ export default {
         ...mapState(["language", "cur_view", "painting_name"]),
        
     },
+    watch: {
+        cur_view: function(newValue, oldValue) {
+            const self = this
+            if (newValue === 'timeline' && newValue !== oldValue) {
+                console.log('从其他视图切换到timeline视图啦')
+            }
+        },
+    },
     methods: {
         initialize() { },
         getSubSet() { // 使用部分样本进行demo展示
@@ -108,7 +116,7 @@ export default {
         left: 0.5%;
         width: 99%;
         top: $seal-card-height + 0.5%;
-        z-index: 1;
+        // z-index: 1;
     }
     .collector-card {
         position: absolute;

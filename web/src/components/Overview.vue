@@ -194,6 +194,14 @@ export default {
             if (img.complete) {
                 const pic_width = img.width,
                       pic_height = img.height
+                
+                // 向store index.js中传值
+                self.$store.commit("changePaintingPic", {
+                                    loaded: true,
+                                    width: pic_width,
+                                    height: pic_height
+                                })
+
                 // 目前仅针对long picture
                 self.resize_scale = $('.main-panel').height() * 0.88 / pic_height // height of "full-image-container" equals to "main-panel" * 0.88
                 console.log('resize_scale', self.resize_scale)
@@ -219,6 +227,14 @@ export default {
                 img.onload = function() {
                     const pic_width = img.width,
                           pic_height = img.height
+
+                    // 向store index.js中传值
+                    self.$store.commit("changePaintingPic", {
+                                        loaded: true,
+                                        width: pic_width,
+                                        height: pic_height
+                                    })
+
                     // 目前仅针对long picture
                     self.resize_scale = $('.main-panel').height() * 0.88 / pic_height // height of "full-image-container" equals to "main-panel" * 0.88
                     console.log('resize_scale', self.resize_scale)
