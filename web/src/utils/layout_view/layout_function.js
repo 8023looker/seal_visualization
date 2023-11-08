@@ -41,6 +41,7 @@ export function compute_abstract_layout(seal_mapped_list, painting_params) {
                         })
 
     return modified_seal_list // modified_seal_list
+    // return seal_mapped_list
 }
 
 // 对seal pic进行缩放，使用对数比例尺，使得sum(area of seal_pics)为整个画布面积的1/2
@@ -59,23 +60,27 @@ function resize_seal_size(seal_mapped_list, canvas_area, resize_scale) {
     let sum_log_area = seal_mapped_list.reduce((total, currentItem) => total + currentItem.width * currentItem.height, 0)
     let ave_area = sum_log_area / seal_mapped_list.length
     let area_resize_scale =  (canvas_area / 3.65) / sum_log_area
-    console.log('max_area', 'min_area', max_area, min_area, area_resize_scale)
+    // console.log('max_area', 'min_area', max_area, min_area, area_resize_scale)
     // 定义对数比例尺
     const logScale1 = d3.scaleLog()
                         .domain([min_area, ave_area]) // 定义数据范围
-                        .range([ave_area * 0.8 * area_resize_scale, ave_area * area_resize_scale]), // 定义输出范围
+                        .range([ave_area * 0.5 * area_resize_scale, ave_area * area_resize_scale * 0.7]), // 定义输出范围
           logScale2 = d3.scaleLog()
                         .domain([ave_area, max_area]) // 定义数据范围
-                        .range([ave_area * area_resize_scale, ave_area * 1.25 * area_resize_scale]) // 定义输出范围
+                        .range([ave_area * area_resize_scale * 0.7, ave_area * 2.5 * area_resize_scale]) // 定义输出范围
     for (let i in seal_mapped_list) {
         const cur_seal_pic = seal_mapped_list[i]
         seal_mapped_list[i]['layout_params'] = {
             x: cur_seal_pic['x'] * resize_scale['x_axis'],
             y: cur_seal_pic['y'] * resize_scale['y_axis'],
-            width: cur_seal_pic['width'] * cur_seal_pic['height'] < ave_area ? Math.sqrt(logScale1(cur_seal_pic['width'] * cur_seal_pic['height']) / (cur_seal_pic['height'] / cur_seal_pic['width'])) : Math.sqrt(logScale2(cur_seal_pic['width'] * cur_seal_pic['height']) / (cur_seal_pic['height'] / cur_seal_pic['width'])),
-            height: cur_seal_pic['width'] * cur_seal_pic['height']  < ave_area ? Math.sqrt(logScale1(cur_seal_pic['width'] * cur_seal_pic['height']) / (cur_seal_pic['width'] / cur_seal_pic['height'])) : Math.sqrt(logScale2(cur_seal_pic['width'] * cur_seal_pic['height']) / (cur_seal_pic['width'] / cur_seal_pic['height'])),
-            // width: logScale(cur_seal_pic['width'] * cur_seal_pic['height']) * cur_seal_pic['width'], // * Math.sqrt(area_resize_scale)
-            // height: logScale(cur_seal_pic['width'] * cur_seal_pic['height']) * cur_seal_pic['height'], // * Math.sqrt(area_resize_scale)
+            width: cur_seal_pic['width'] * cur_seal_pic['height'] < ave_area ? 
+                   Math.sqrt(logScale1(cur_seal_pic['width'] * cur_seal_pic['height']) / (cur_seal_pic['height'] / cur_seal_pic['width'])) 
+                   : Math.sqrt(logScale2(cur_seal_pic['width'] * cur_seal_pic['height']) / (cur_seal_pic['height'] / cur_seal_pic['width'])),
+            height: cur_seal_pic['width'] * cur_seal_pic['height']  < ave_area ? 
+                    Math.sqrt(logScale1(cur_seal_pic['width'] * cur_seal_pic['height']) / (cur_seal_pic['width'] / cur_seal_pic['height'])) 
+                    : Math.sqrt(logScale2(cur_seal_pic['width'] * cur_seal_pic['height']) / (cur_seal_pic['width'] / cur_seal_pic['height'])),
+            // width: Math.sqrt(area_resize_scale) * cur_seal_pic['width'], // * Math.sqrt(area_resize_scale)
+            // height: Math.sqrt(area_resize_scale) * cur_seal_pic['height'], // * Math.sqrt(area_resize_scale)
             offset2prev: 0
         }
     }
@@ -127,9 +132,10 @@ function judge_log_scale(seal_mapped_list) {
     let consistency = true
 
     for (let i = 0; i< seal_mapped_list.length; i++) {
-        if (seal_width_list[i]['index'] !== seal_resize_width_list[i]['index'] ||
-            seal_height_list[i]['index'] !== seal_resize_height_list[i]['index'] ||
-            seal_area_list[i]['index'] !== seal_resize_area_list[i]['index']) {
+        // if (seal_width_list[i]['index'] !== seal_resize_width_list[i]['index'] ||
+        //     seal_height_list[i]['index'] !== seal_resize_height_list[i]['index'] ||
+        //     seal_area_list[i]['index'] !== seal_resize_area_list[i]['index']) {
+        if (seal_area_list[i]['index'] !== seal_resize_area_list[i]['index']) { // 针对seal area的排序保持不变
                 consistency = false
                 console.log(i)
                 console.log('width', seal_width_list[i]['index'], seal_resize_width_list[i]['index'])
@@ -158,25 +164,14 @@ function rescale_seal_dist(seal_detect_list, constraint_list) {
                 ifConflict: false, // 检测是否有seal存在冲突
                 conflict_list: [] // 与当前detected seal存在冲突的seal_list
             }
-            for (let j in redefine_seal_list) { // 对于既定的seal_list, 检测是否发生冲突
-                const cur_detected_seal = redefine_seal_list[j] // 当前用于检测冲突的seal
-                let ifConflict2Current = !(cur_detected_seal['layout_params']['x'] + cur_detected_seal['layout_params']['width'] < cur_redefined_seal['layout_params']['x'] 
-                                        || cur_detected_seal['layout_params']['x'] > cur_redefined_seal['layout_params']['x'] + cur_redefined_seal['layout_params']['width'])
-                                        || !(cur_detected_seal['layout_params']['y'] + cur_detected_seal['layout_params']['height'] < cur_redefined_seal['layout_params']['y'] 
-                                        || cur_detected_seal['layout_params']['y'] > cur_redefined_seal['layout_params']['y'] + cur_redefined_seal['layout_params']['height'])
-                if (ifConflict2Current) { // 如果与当前既定的seal存在冲突
-                    conflict_param['ifConflict'] = true
-                    conflict_param['conflict_list'].push(cur_detected_seal)
-                } else {
-                    continue
-                }           
-            }
+            conflict_param = detectOverlay(cur_redefined_seal, redefine_seal_list)
+
             // console.log('conflict_param', conflict_param)
             // 对于conflict情况进行的操作
             if (conflict_param['ifConflict']) { // 如果存在conflict
                 // 计算4个方向上，防止冲突产生的移动最小值
                 const moving_value = minimum_direction_moving_value(cur_redefined_seal, conflict_param['conflict_list'])
-                let modified_redefined_seal = optimized_moving_direction(cur_redefined_seal, moving_value, constraint_list, seal_detect_list)
+                let modified_redefined_seal = optimized_moving_direction(cur_redefined_seal, moving_value, constraint_list, seal_detect_list, redefine_seal_list)
                 redefine_seal_list.push(modified_redefined_seal)
             } else { // 不存在冲突
                 redefine_seal_list.push(cur_redefined_seal)
@@ -287,8 +282,30 @@ function minimum_direction_moving_value(cur_seal, conflict_list) {
     }
 }
 
+// 遍历已经确定position的list
+function detectOverlay(cur_redefined_seal, redefine_seal_list) {
+    let conflict_param = {
+        ifConflict: false, // 检测是否有seal存在冲突
+        conflict_list: [] // 与当前detected seal存在冲突的seal_list
+    }
+    for (let i in redefine_seal_list) {
+        const cur_detected_seal = redefine_seal_list[i]
+        let ifConflict2Current = !(cur_detected_seal['layout_params']['x'] + cur_detected_seal['layout_params']['width'] < cur_redefined_seal['layout_params']['x'] 
+                                || cur_detected_seal['layout_params']['x'] > cur_redefined_seal['layout_params']['x'] + cur_redefined_seal['layout_params']['width'])
+                                && !(cur_detected_seal['layout_params']['y'] + cur_detected_seal['layout_params']['height'] < cur_redefined_seal['layout_params']['y'] 
+                                || cur_detected_seal['layout_params']['y'] > cur_redefined_seal['layout_params']['y'] + cur_redefined_seal['layout_params']['height'])
+        if (ifConflict2Current) { // 如果与当前既定的seal存在冲突
+            conflict_param['ifConflict'] = true
+            conflict_param['conflict_list'].push(cur_detected_seal)
+        } else {
+            continue
+        }    
+    }
+    return conflict_param
+}
+
 // 计算当前最优的移动方向
-function optimized_moving_direction(cur_redefined_seal, moving_value, constraint_list, seal_mapped_list) {
+function optimized_moving_direction(cur_redefined_seal, moving_value, constraint_list, seal_mapped_list, redefine_seal_list) {
     const moving_index = cur_redefined_seal['index'],
           moving_direction = ['left', 'right', 'up', 'down']
     let seal_mapped_list_copy = jsonCopy(seal_mapped_list)
@@ -314,8 +331,10 @@ function optimized_moving_direction(cur_redefined_seal, moving_value, constraint
                 new_seal_order = generate_constraint_list(seal_mapped_list_copy)
 
                 let ifConsistent = judge_order_consistency(new_seal_order, constraint_list, 'high')
+                let ifOverlay = detectOverlay(cur_redefined_seal, redefine_seal_list)
 
                 if (ifConsistent) {
+                // if (ifConsistent && !ifOverlay['ifConflict']) {
                     findDirection = true
                     break
                 }
@@ -326,8 +345,10 @@ function optimized_moving_direction(cur_redefined_seal, moving_value, constraint
                 new_seal_order = generate_constraint_list(seal_mapped_list_copy)
 
                 let ifConsistent = judge_order_consistency(new_seal_order, constraint_list, 'high')
+                let ifOverlay = detectOverlay(cur_redefined_seal, redefine_seal_list)
 
                 if (ifConsistent) {
+                // if (ifConsistent && !ifOverlay['ifConflict']) {
                     findDirection = true
                     break
                 }
@@ -338,8 +359,10 @@ function optimized_moving_direction(cur_redefined_seal, moving_value, constraint
                 new_seal_order = generate_constraint_list(seal_mapped_list_copy)
 
                 let ifConsistent = judge_order_consistency(new_seal_order, constraint_list, 'high')
+                let ifOverlay = detectOverlay(cur_redefined_seal, redefine_seal_list)
 
                 if (ifConsistent) {
+                // if (ifConsistent && !ifOverlay['ifConflict']) {
                     findDirection = true
                     break
                 }
@@ -350,8 +373,10 @@ function optimized_moving_direction(cur_redefined_seal, moving_value, constraint
                 new_seal_order = generate_constraint_list(seal_mapped_list_copy)
 
                 let ifConsistent = judge_order_consistency(new_seal_order, constraint_list, 'high')
+                let ifOverlay = detectOverlay(cur_redefined_seal, redefine_seal_list)
 
                 if (ifConsistent) {
+                // if (ifConsistent && !ifOverlay['ifConflict']) {
                     findDirection = true
                     break
                 }
@@ -371,8 +396,10 @@ function optimized_moving_direction(cur_redefined_seal, moving_value, constraint
                     new_seal_order = generate_constraint_list(seal_mapped_list_copy)
     
                     let ifConsistent = judge_order_consistency(new_seal_order, constraint_list, 'middle')
-    
+                    let ifOverlay = detectOverlay(cur_redefined_seal, redefine_seal_list)
+
                     if (ifConsistent) {
+                    // if (ifConsistent && !ifOverlay['ifConflict']) {
                         findDirection = true
                         break
                     }
@@ -383,8 +410,10 @@ function optimized_moving_direction(cur_redefined_seal, moving_value, constraint
                     new_seal_order = generate_constraint_list(seal_mapped_list_copy)
     
                     let ifConsistent = judge_order_consistency(new_seal_order, constraint_list, 'middle')
-    
+                    let ifOverlay = detectOverlay(cur_redefined_seal, redefine_seal_list)
+
                     if (ifConsistent) {
+                    // if (ifConsistent && !ifOverlay['ifConflict']) {
                         findDirection = true
                         break
                     }
@@ -395,8 +424,10 @@ function optimized_moving_direction(cur_redefined_seal, moving_value, constraint
                     new_seal_order = generate_constraint_list(seal_mapped_list_copy)
     
                     let ifConsistent = judge_order_consistency(new_seal_order, constraint_list, 'middle')
-    
+                    let ifOverlay = detectOverlay(cur_redefined_seal, redefine_seal_list)
+
                     if (ifConsistent) {
+                    // if (ifConsistent && !ifOverlay['ifConflict']) {
                         findDirection = true
                         break
                     }
@@ -407,8 +438,10 @@ function optimized_moving_direction(cur_redefined_seal, moving_value, constraint
                     new_seal_order = generate_constraint_list(seal_mapped_list_copy)
     
                     let ifConsistent = judge_order_consistency(new_seal_order, constraint_list, 'middle')
-    
+                    let ifOverlay = detectOverlay(cur_redefined_seal, redefine_seal_list)
+
                     if (ifConsistent) {
+                    // if (ifConsistent && !ifOverlay['ifConflict']) {
                         findDirection = true
                         break
                     }
@@ -422,7 +455,7 @@ function optimized_moving_direction(cur_redefined_seal, moving_value, constraint
                 // 获取对象的所有键
                 const keys = Object.keys(moving_value)
                 // 使用 Math.min() 和 apply() 方法找到最小键值
-                const minKey = keys.reduce((a, b) => obj[a] < obj[b] ? a : b)
+                const minKey = keys.reduce((a, b) => moving_value[a] < moving_value[b] ? a : b)
                 if (minKey === 'left') {
                     seal_mapped_list_copy[found_index_number]['layout_params']['x'] -= moving_value['left']
                 } else if (minKey === 'right') {
@@ -526,4 +559,10 @@ function panning_overall(seal_mapped_list, container_param) {
         seal_mapped_list[i]['layout_params']['y'] += (y_offset - canvas_bound['top'])
     }
     return seal_mapped_list
+}
+
+// optimization
+// 将seal按照column打包成群
+function groupSealsByColumn(seal_mapped_list) {
+
 }

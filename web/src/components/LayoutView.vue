@@ -4,10 +4,10 @@
             <img :src="fullImageModel.src" style="width: 100%; height: 100%; object-fit: contain;">
         </div>
     </el-dialog>
-    <div class="layout-container">
+    <div v-show="cur_view === 'layout'" class="layout-container">
         <div v-if="showSealDiv" v-for="(item, index) in cardList" :key="index" class="seal-image-container"
             :style="{width: item.layout_params.width + 'px', height: item.layout_params.height + 'px', left: item.layout_params.x + 'px', top: item.layout_params.y + 'px'}">
-            <img :src="item.image_href" class="seal-image"
+            <img :src="item.image_href" class="seal-image" :id="'seal-image-layout-' + item.index"
                 @click="fullImageModel.show =true, fullImageModel.src=item.image_href, fullImageModel.label = item.seal_name">
         </div>
     </div>

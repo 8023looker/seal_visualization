@@ -118,7 +118,7 @@ export default {
         seal_detail: {
             handler: function(newVal, oldVal) {
                 const self = this
-                console.log("seal_detail", newVal)
+                // console.log("seal_detail", newVal)
             },
             deep: true
         },
