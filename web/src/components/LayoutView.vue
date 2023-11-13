@@ -7,9 +7,15 @@
     <div v-show="cur_view === 'layout'" class="layout-container">
         <div v-if="showSealDiv" v-for="(item, index) in cardList" :key="index" class="seal-image-container"
             :style="{width: item.layout_params.width + 'px', height: item.layout_params.height + 'px', left: item.layout_params.x + 'px', top: item.layout_params.y + 'px'}">
-            <img :src="item.image_href" class="seal-image" :id="'seal-image-layout-' + item.index"
-                @click="fullImageModel.show =true, fullImageModel.src=item.image_href, fullImageModel.label = item.seal_name">
+            <!-- <img :src="item.image_href" class="seal-image" :id="'seal-image-layout-' + item.index"
+                @click="fullImageModel.show =true, fullImageModel.src=item.image_href, fullImageModel.label = item.seal_name"> -->
+            <img :src="item.image_href" class="seal-image" :id="'sealImageLayout-' + item.index"
+                @click="showSealInfoCard">
         </div>
+        <LayoutCard v-for="(item, index) in detailSealInfo"
+            :seal_detail="JSON.parse(JSON.stringify(item))"
+            :cardList="cardList"
+        ></LayoutCard>
     </div>
 </template>
 
@@ -22,17 +28,20 @@ const $ = require("jquery");
 const time_duration = 1000,
       timeout_duration = 100
 
+import LayoutCard from "./layout_widgets/LayoutCard.vue"
+
 import * as Data from "@/data/Data.js";
 import * as TypeColor from "@/theme/type_color";
 import { jsonCopy } from "@/utils/copy";
 import * as DataProcess from "@/utils/data_process";
 import * as SealCardFunc from "@/utils/timeline/seal_card_func";
 import * as LayoutFunc from "@/utils/layout_view/layout_function"
+import * as LayoutFuncV2 from "@/utils/layout_view/layout_function_v2"
 
 export default {
     name: "LayoutView",
     components: {
-
+        LayoutCard
     },
     data() {
         return {
@@ -45,11 +54,28 @@ export default {
                 label: null
             },
             showSealDiv: false,
+            sealCardPosDict: {},
         }
     },
     props: ["canvas_width", "canvas_height"],
     computed: {
         ...mapState(["language", "cur_view", "painting_name", "selection", "painting_pic"]),
+        detailSealInfo: {
+            get() {
+                const self = this
+                const tar = self.selection.entity !== null && self.selection.value
+                if (!tar) return []
+                let seal_pic_list = []
+                // 或许可以考虑添加一些click position的信息
+                seal_pic_list = jsonCopy(self.cardList.filter((d) => tar.includes(d['index'])))
+
+                for (let i in seal_pic_list) {
+                    seal_pic_list[i]['card_pos'] = self.sealCardPosDict[seal_pic_list[i]['index']]
+                }
+                console.log(seal_pic_list, self.selection.value)
+                return seal_pic_list
+            },
+        },
     },
     watch: {
         cur_view: function(newValue, oldValue) {
@@ -91,7 +117,42 @@ export default {
             const self = this
             
         },
+        showSealInfoCard(event) {
+            const self = this
+            let selected_seal_pic_list = self.selection['value']
+            const seal_pic_index = (event.target.id).split('-')[1] // index of current clicked seal_pic
+            // console.log(seal_pic_index)
 
+            // 获取点击的div的位置信息
+            const clickedDiv = event.target
+            const rect = clickedDiv.getBoundingClientRect()
+            // console.log(rect)
+
+            self.sealCardPosDict[seal_pic_index] = {
+                x: rect.left + rect.width - $('.main-panel').offset().left, // event.clientX - rect.left
+                y: rect.top - $('.main-panel').offset().top // event.clientY - rect.top
+            }
+            
+            if (!selected_seal_pic_list.includes(seal_pic_index)) {
+                selected_seal_pic_list = [...new Set(selected_seal_pic_list)] // 去重
+                selected_seal_pic_list.push(seal_pic_index)
+                self.$store.commit("changeSelection", {
+                    entity: "seal_pic",
+                    value: selected_seal_pic_list
+                })
+            } else {
+                // 没有操作
+            }
+        },
+        initializeSealPosDict() {
+            const self = this
+            for (let i in self.cardList) {
+                self.sealCardPosDict[self.cardList[i]['index']] = {
+                    x: 0,
+                    y: 0
+                }
+            }
+        },
     },
     mounted() {
         const that = this
@@ -109,10 +170,10 @@ export default {
 
         that.data = DataProcess.getCollectorColor(that.data)
         that.cardList = SealCardFunc.SealCardMapping(that.data) // mapped seal pictures into list
+        that.initializeSealPosDict()
         // console.log("seal_data", that.data)
 
         // LayoutFunc.compute_abstract_layout(that.cardList) // 刚开始图片可能还没有加载出来
-
         that.initialize()
     },
 };
