@@ -13,11 +13,12 @@
                 ></OverviewCard>
             </div>
        </div>
-       <div class="thumbnail-container">
+       <div class="thumbnail-container" id="thumbnail-container">
             <Thumbnail
                 :original_painting="original_painting"
             ></Thumbnail> <!--需要computed-->
        </div>
+       <svg v-show="imageParam.visible" class="overview-transition-svg"></svg>
     </div>
 </template>
 
@@ -33,12 +34,14 @@ const time_duration = 1000,
 import OverviewCard from "./overview_widgets/OverviewCard.vue"
 import Thumbnail from "./overview_widgets/Thumbnail.vue"
 
-import * as Data from "@/data/Data.js";
-import * as TypeColor from "@/theme/type_color";
-import { jsonCopy } from "@/utils/copy";
+import * as Data from "@/data/Data.js"
+import * as TypeColor from "@/theme/type_color"
+import { jsonCopy } from "@/utils/copy"
 import * as DataProcess from "@/utils/data_process"
 import * as OverviewFunction from "@/utils/overview/overview_function"
-import * as SealCardFunc from "@/utils/timeline/seal_card_func";
+import * as SealCardFunc from "@/utils/timeline/seal_card_func"
+
+import * as Overview2Layout from "@/utils/transition/overview_and_layout"
 
 export default {
     name: "Overview",
@@ -62,6 +65,7 @@ export default {
                 zoom: 1,
             },
             resize_scale: 1, // 原始图片的缩放倍数
+            resize_scaleX: 1, // X轴方向max-width的缩放倍数
             original_painting: { // 原始图片的加载参数，用于向子组件Thumbnail传参
                 complete: false
             },
@@ -70,7 +74,7 @@ export default {
     },
     props: ["canvas_width", "canvas_height"],
     computed: {
-        ...mapState(["language", "cur_view", "painting_name", "selection"]),
+        ...mapState(["language", "cur_view", "painting_name", "selection", "transition", "overlay_duration", "painting_pic"]),
         detailSealInfo: {
             get() {
                 const self = this
@@ -126,6 +130,12 @@ export default {
                 OverviewFunction.fullImageDragThumbnail()
             }
         },
+        transition: {
+            handler: function (newVal, _) {
+                this.transition_handler(newVal);
+            },
+            deep: true,
+        },
     },
     methods: {
         initialize() { // 在切换到当前视图时需要重新刷新一遍
@@ -164,6 +174,7 @@ export default {
                       pic_height = img_preview.height
                 // 目前仅针对long picture
                 self.resize_scale = $('.main-panel').height() * 0.88 / pic_height // height of "full-image-container" equals to "main-panel" * 0.88
+                self.resize_scaleX = $('.main-panel').width() / pic_width
                 console.log('resize_scale', self.resize_scale)
 
                 self.imageParam['offsetX'] = -(self.resize_scale * pic_width / 2 - $('.main-panel').width() / 2)     
@@ -179,6 +190,7 @@ export default {
                           pic_height = img_preview.height
                     // 目前仅针对long picture
                     self.resize_scale = $('.main-panel').height() * 0.88 / pic_height // height of "full-image-container" equals to "main-panel" * 0.88
+                    self.resize_scaleX = $('.main-panel').width() / pic_width
                     console.log('resize_scale', self.resize_scale)
 
                     self.imageParam['offsetX'] = -(self.resize_scale * pic_width / 2 - $('.main-panel').width() / 2)    
@@ -204,6 +216,7 @@ export default {
 
                 // 目前仅针对long picture
                 self.resize_scale = $('.main-panel').height() * 0.88 / pic_height // height of "full-image-container" equals to "main-panel" * 0.88
+                self.resize_scaleX = $('.main-panel').width() / pic_width
                 console.log('resize_scale', self.resize_scale)
 
                 self.imageParam['offsetX'] = -(self.resize_scale * pic_width / 2 - $('.main-panel').width() / 2)
@@ -237,6 +250,7 @@ export default {
 
                     // 目前仅针对long picture
                     self.resize_scale = $('.main-panel').height() * 0.88 / pic_height // height of "full-image-container" equals to "main-panel" * 0.88
+                    self.resize_scaleX = $('.main-panel').width() / pic_width
                     console.log('resize_scale', self.resize_scale)
 
                     self.imageParam['offsetX'] = -(self.resize_scale * pic_width / 2 - $('.main-panel').width() / 2)
@@ -310,6 +324,36 @@ export default {
                                 })
                             })
         },
+        transition_handler(trans) {
+            console.log(trans);
+            const self = this
+
+            const fr = trans.from;
+            const to = trans.to;
+            const st = trans.state;
+
+            if (fr === "overview" && st === "out") { // 从overview视图往外走
+                console.log("transition out");
+
+                Overview2Layout.overview2layout(time_duration * 6, 'from', self.selection, self.cardList, self.painting_pic)
+
+                setTimeout(() => {
+                    self.$store.commit("transCompleted", null)
+                }, time_duration * 6)
+            } else if (to === "overview" && st === "out") {
+                console.log("preparing for transition")
+                
+            } else if (to === 'overview' && st === 'overlay') { // 2个视图更新重叠
+            
+
+            } else if (to === "overview" && st === "in") { // 正在从其他视图切换到overview视图
+                console.log("transition in");
+                setTimeout(() => {
+                    self.$store.commit("transCompleted", null);
+                }, time_duration);
+                // this.initializeTimeline()
+            }
+        },
     },
     mounted() {
         const that = this
@@ -351,13 +395,14 @@ export default {
     $thumbnail-panel-height: 10%;
     .full-image-container {
         position: absolute;
-        left: 0.5%;
-        width: 99%;
+        left: 0%;
+        width: 100%;
         top: 0%;
         height: $full-image-panel-height;
 
-        background-color: rgba(91, 203, 23, 0.15);
+        // background-color: rgba(91, 203, 23, 0.15);
         overflow-x: auto;
+        z-index: 2;
         .image-scroll-container {
             position: absolute;
             top: 0%;
@@ -382,13 +427,20 @@ export default {
         width: 99%;
         top: $full-image-panel-height + 1%;
         height: $thumbnail-panel-height;
-        background-color: rgba(247, 171, 0, 0.15);
+        // background-color: rgba(247, 171, 0, 0.15);
 
         display: flex;
         align-items: center;
         justify-content: center;
 
         overflow-x: auto;
+    }
+    .overview-transition-svg {
+        position: absolute;
+        top: 0%;
+        left: 0%;
+        height: 100%;
+        width: 100%;
     }
 }
 

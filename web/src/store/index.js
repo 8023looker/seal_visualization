@@ -9,7 +9,7 @@ export default createStore({
     state: {
         rem: null,
         language: "zh",
-        cur_view: "layout", // "timeline", "overview", "layout"
+        cur_view: "overview", // "timeline", "overview", "layout"
         overlay_view: null,
         overlay_duration: 2000,
         transition: {
@@ -20,6 +20,11 @@ export default createStore({
         selection: {
             entity: null, // collector, seal_name, seal_pic 3个层级
             value: [], // list (For seal_pic, the "index" attribute is stored in the list)
+        },
+        transition: {
+            from: null,
+            to: null,
+            state: null,
         },
 
         // seal visualization
@@ -81,7 +86,6 @@ export default createStore({
             } else if (trans.state === "out") {
                 state.cur_view = trans.to;
                 state.overlay_view = trans.from;
-                // setTimeout(() => {
                 trans.state = "overlay";
                 setTimeout(() => {
                     trans.state = "in";
@@ -89,8 +93,6 @@ export default createStore({
                     console.log("overlay finished, transition in");
                 }, state.overlay_duration);
                 if (debug) console.log("transition out finished, overlaying");
-                // }, 5000);
-                // trans.state = "in";
             } else if (trans.state === "overlay") {
                 console.log("error: overlaying");
             } else if (trans.state === "in") {

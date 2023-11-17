@@ -17,6 +17,7 @@
             :cardList="cardList"
         ></LayoutCard>
     </div>
+    <svg class="layout-transition-svg"></svg>
 </template>
 
 <script>
@@ -37,6 +38,10 @@ import * as DataProcess from "@/utils/data_process";
 import * as SealCardFunc from "@/utils/timeline/seal_card_func";
 import * as LayoutFunc from "@/utils/layout_view/layout_function"
 import * as LayoutFuncV2 from "@/utils/layout_view/layout_function_v2"
+
+import * as Overview2Layout from "@/utils/transition/overview_and_layout"
+
+import { setExportcardListInLayout } from "@/utils/transition/overview_and_layout"
 
 export default {
     name: "LayoutView",
@@ -59,7 +64,7 @@ export default {
     },
     props: ["canvas_width", "canvas_height"],
     computed: {
-        ...mapState(["language", "cur_view", "painting_name", "selection", "painting_pic"]),
+        ...mapState(["language", "cur_view", "painting_name", "selection", "painting_pic", "transition", "overlay_duration"]),
         detailSealInfo: {
             get() {
                 const self = this
@@ -111,6 +116,19 @@ export default {
             },
             deep: true
         },
+        transition: {
+            handler: function (newVal, _) {
+                this.transition_handler(newVal);
+            },
+            deep: true,
+        },
+        cardList: {
+            handler: function (newVal, oldVal) {
+                console.log('cardList in abstract view更新啦', newVal)
+                setExportcardListInLayout(newVal)
+            },
+            deep: true
+        },
     },
     methods: {
         initialize() { // 在切换到当前视图时需要重新刷新一遍
@@ -153,6 +171,37 @@ export default {
                 }
             }
         },
+        transition_handler(trans) {
+            console.log(trans);
+            const self = this
+
+            const fr = trans.from;
+            const to = trans.to;
+            const st = trans.state;
+
+            if (fr === "layout" && st === "out") { // 从layout视图往外走
+                console.log("transition out");
+
+                Overview2Layout.layout2overview(time_duration * 6, 'to', self.selection, self.cardList, self.painting_pic)
+
+                setTimeout(() => {
+                    self.$store.commit("transCompleted", null)
+                }, time_duration * 6)
+            } else if (to === "layout" && st === "out") {
+                console.log("preparing for transition")
+                
+            } else if (to === 'layout' && st === 'overlay') { // 2个视图更新重叠
+            
+
+            } else if (to === "layout" && st === "in") { // 正在从其他视图切换到layout视图
+                console.log("transition in");
+
+                setTimeout(() => {
+                    self.$store.commit("transCompleted", null);
+                }, time_duration);
+                // this.initializeTimeline()
+            }
+        },
     },
     mounted() {
         const that = this
@@ -186,6 +235,7 @@ export default {
     height: 100%;
     left: 0%;
     top: 0%;
+    z-index: 2;
     // background-color: rgba(91, 203, 23, 0.15);
     .seal-image-container {
         position: absolute;
@@ -194,7 +244,7 @@ export default {
             left: 0%;
             top: 0%;
             // width: 100%;
-            // height: 100;
+            // height: 100%;
             max-width: 100%; /* 设置图像的最大宽度为容器宽度的百分比 */
             max-height: 100%; /* 设置图像的最大高度为容器高度的百分比 */
             width: auto; /* 自动调整宽度 */
@@ -203,4 +253,11 @@ export default {
         }
     }
 }
+.layout-transition-svg {
+        position: absolute;
+        left: 0%;
+        top: 0%;
+        width: 100%;
+        height: 100%;
+    }
 </style>
