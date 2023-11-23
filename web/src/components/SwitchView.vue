@@ -32,7 +32,7 @@ export default {
                     en: "Overview",
                 },
                 layout: {
-                    zh: "抽象图",
+                    zh: "抽象布局",
                     en: "Abstract Layout",
                 },
                 timeline: {
