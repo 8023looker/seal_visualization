@@ -20,8 +20,7 @@ export function detectFullImageScroll() { // 对于上面的高清大图'full-im
     console.log("detectImageScroll")
     let eventDiv = document.getElementById('full-image-container') // 信息卡片container
     eventDiv.addEventListener('scroll', function() { // 实时监听scroll
-    //    console.log('image-container移动啦', eventDiv.scrollLeft)
-
+        // console.log('image-container移动啦', eventDiv.scrollLeft)
     })
 }
 

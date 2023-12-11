@@ -103,16 +103,29 @@ export function renderCollectorSealIconGroup(collector_list, icon_size) {
         // 首先清除此前所有元素
         svg.selectAll('g').remove()
 
-        let seal_icon = svg.selectAll('g')
+        let unselected_layer =  svg.append('g')
+                                    // .attr('class', 'seal-collector-icon-unselected-layer') // 移动至rect中
+        unselected_layer.append('rect')
+                        .attr('class', 'seal-collector-icon-unselected-layer')
+                        .attr('x', 0)
+                        .attr('y', 0)
+                        .attr('width', container_width)
+                        .attr('height', Math.ceil(seal_group.length / 10) * icon_size + icon_size * 0.3 * 1 + (Math.ceil(seal_group.length / 10) - 1) * icon_size * 0.4)
+                        .attr('fill', 'white')
+                        .style('opacity', 0)
+
+        let seal_icon = svg.selectAll('.seal-icon-group')
                             .data(seal_group)
                             .join('g')
-                            .attr('class', (d) => `seal-icon-rect-${d['seal_name']}`)
+                            // .attr('id', (d) => `seal-icon-rect-${d['seal_name']}`) // 移至rect
                             .attr('transform', (d, i) => `translate(${i % 10 * (icon_size + gap)},${Math.floor(i / 10) * icon_size * (1 + 0.4) + icon_size * 0.3})`)
         seal_icon.append('rect')
                     .attr('x', 0)
                     .attr('y', 0)
                     .attr('width', icon_size)
                     .attr('height', icon_size)
+                    .attr('class', 'seal-single-icon')
+                    .attr('id', (d) => `seal-icon-rect-${d['seal_name']}`)
                     // .attr('fill', '#A56752')
                     .attr('fill', TypeColor.color_list[collector_name])
                     .attr('fill-opacity', 0.6)

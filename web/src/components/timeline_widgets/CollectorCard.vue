@@ -15,7 +15,7 @@
         </div>
         <div class="seal-icon-group" 
             :style="{top: containerParam.unit_pixel * 35 + 'px', height: containerParam.unit_pixel * 30 + 'px'}">
-            <svg :id="'seal-icon-group-' + item['collector_name']"></svg>
+            <svg class="seal-icon-group-svg" :id="'seal-icon-group-' + item['collector_name']"></svg>
         </div>
         <div class="collector-intro" :style="{top: containerParam.unit_pixel * 70 + 'px', height: containerParam.unit_pixel * 35 + 'px', fontSize: containerParam.unit_pixel * 11 + 'px'}">{{ item['intro'] }}</div>
     </div>
@@ -62,7 +62,7 @@ export default {
     },
     props: ["canvas_width", "canvas_height", "data"],
     computed: {
-        ...mapState(["language", "cur_view", "painting_name", "rem", "selection"]),
+        ...mapState(["language", "cur_view", "painting_name", "rem", "selection", "hover"]),
        
     },
     watch: {
@@ -77,6 +77,15 @@ export default {
                 const self = this
                 if (newVal === 'timeline' && newVal !== oldVal) {
                     self.renderCollectorCard()
+                }
+            },
+            deep: true
+        },
+        hover: {
+            handler: function(newVal, oldVal) {
+                const self = this
+                if (newVal === 'timeline' && newVal !== oldVal) {
+
                 }
             },
             deep: true
@@ -100,7 +109,7 @@ export default {
                 self.containerParam = SealCardFunc.getSealCardContainerSize() // {x: , width: }
 
                 self.containerParam['card_width'] = self.containerParam['width'] / collector_card_num // 220单位
-                self.containerParam['card_height'] = self.containerParam['card_width'] * 0.9 * 100 / 220 // 100单位
+                self.containerParam['card_height'] = self.containerParam['card_width'] * 0.85 * 100 / 220 // 100单位, * 0.9 * 100 / 220
                 self.containerParam['unit_pixel'] = self.containerParam['card_height'] / 100
 
                 console.log(self.data['collectors'])

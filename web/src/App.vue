@@ -5,7 +5,7 @@
             :style="{ left: (window_width - render_width) / 2 + 'px', top: (window_height - render_height) / 2 + 'px', width: render_width + 'px', height: render_height + 'px' }">
             <div class="header">
                 <Title></Title>
-                <SwitchView></SwitchView>
+                <!-- <SwitchView></SwitchView> -->
             </div>
             <div class="left-panel">
             
@@ -237,7 +237,7 @@ body {
         position: absolute;
 
         $title-height: 6.4%;
-        $left-panel-width: 10%;
+        $left-panel-width: 0%; // 10%
         // $bottom-panel-height: 10%;
 
         $switch-lang-width: $left-panel-width;

@@ -9,7 +9,7 @@ export default createStore({
     state: {
         rem: null,
         language: "zh",
-        cur_view: "overview", // "timeline", "overview", "layout"
+        cur_view: "timeline", // "timeline", "overview", "layout"
         overlay_view: null,
         overlay_duration: 2000,
         transition: {
@@ -21,10 +21,9 @@ export default createStore({
             entity: null, // collector, seal_name, seal_pic 3个层级
             value: [], // list (For seal_pic, the "index" attribute is stored in the list)
         },
-        transition: {
-            from: null,
-            to: null,
-            state: null,
+        hover: {
+            entity: null,
+            value: []
         },
 
         // seal visualization
@@ -108,6 +107,10 @@ export default createStore({
         changeSelection(state, payload) {
             if (debug) console.log("changeSelection", payload);
             state.selection = payload;
+        },
+        changeHover(state, payload) {
+            if (debug) console.log("changeHover", payload);
+            state.hover = payload;
         },
         changePaintingPic(state, payload) {
             state.painting_pic = payload

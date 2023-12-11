@@ -17,7 +17,7 @@
             :cardList="cardList"
         ></LayoutCard>
     </div>
-    <svg class="layout-transition-svg"></svg>
+    <svg v-show="cur_view === 'layout'" class="layout-transition-svg"></svg> <!--v-show="cur_view === 'layout'"并不完全正确-->
 </template>
 
 <script>

@@ -4,7 +4,7 @@
             {{ title[language] }}
         </div>
 
-        <div class="lang-select">
+        <!-- <div class="lang-select">
             <el-dropdown
                 trigger="click"
                 popper-class="articleDropdownPopper"
@@ -26,7 +26,7 @@
                     </el-dropdown-menu>
                 </template>
             </el-dropdown>
-        </div>
+        </div> -->
     </div>
 </template>
 
@@ -43,7 +43,7 @@ export default {
             // cur_lang: "zh",
             langs: ["zh", "en"],
             title: {
-                zh: "印章可视化",
+                zh: "印章时间线", // 印章可视化
                 en: "Seal Visualization",
             },
             lang_dict: {

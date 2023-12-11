@@ -52,8 +52,8 @@ export default {
     },
     props: ["canvas_width", "canvas_height"],
     computed: {
-        ...mapState(["language", "cur_view", "painting_name"]),
-       
+        ...mapState(["language", "cur_view", "painting_name", "rem", "selection", "hover"]),
+    
     },
     watch: {
         cur_view: function(newValue, oldValue) {
@@ -61,6 +61,24 @@ export default {
             if (newValue === 'timeline' && newValue !== oldValue) {
                 console.log('从其他视图切换到timeline视图啦')
             }
+        },
+        selection: { // 注意：当前select || hover 均为单选，而非List
+            handler: function(newVal, oldVal) {
+                const self = this
+                if (newVal === 'timeline' && newVal !== oldVal) {
+                    self.renderCollectorCard()
+                }
+            },
+            deep: true
+        },
+        hover: {
+            handler: function(newVal, oldVal) {
+                const self = this
+                if (newVal === 'timeline' && newVal !== oldVal) {
+
+                }
+            },
+            deep: true
         },
     },
     methods: {
@@ -100,7 +118,7 @@ export default {
 
     $axis-panel-height: 10%;
     $seal-card-height: 35%; // 90%
-    $collector-card-height: 55%;
+    $collector-card-height: 53%; // 55%
     .seal-card {
         position: absolute;
         height: $seal-card-height;
@@ -126,6 +144,9 @@ export default {
         top: $axis-panel-height + $seal-card-height;
         overflow-x: auto;
         // background-color: rgba(247, 171, 0, 0.15);
+    }
+    .collector-card::-webkit-scrollbar {
+        display: none;
     }
     .link-container {
         position: absolute;

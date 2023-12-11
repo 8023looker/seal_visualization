@@ -28,9 +28,22 @@ export function draw_seal_rect(seal_data, rem) { //
                 .attr('width', parentDiv.clientWidth * (1 - margin.left - margin.right))
                 .attr('height', parentDiv.clientHeight)
     // console.log('seal_data', seal_data)
-    let seal_group = svg.selectAll('g')
+
+    // unselected layer
+    let unselected_layer = svg.append('g')
+                                .attr('class', 'seal-rect-unselected-layer')
+    unselected_layer.append('rect')
+                    .attr('x', 0)
+                    .attr('y', 0)
+                    .attr('width', parentDiv.clientWidth * (1 - margin.left - margin.right))
+                    .attr('height', parentDiv.clientHeight)
+                    .attr('fill', 'white')
+                    .style('opacity', 0)
+
+    let seal_group = svg.selectAll('.seal-rect-group')
                         .data(seal_data['collectors'])
                         .join('g')
+                        .attr('class', 'seal-rect-group')
                         .attr('id', (d) => `${d['collector_name']}-seal-circle-group`)
                         .attr('transform', (d) => `translate(${timeScale((d['life_span'][0] + d['life_span'][1]) / 2)},0)`) // basic version, 首先移动到life_span中心点处
 
@@ -58,6 +71,7 @@ export function draw_seal_rect(seal_data, rem) { //
     //                 .text((d) => `${d.seal_name}`)
     // rect
     single_seal.append('rect')
+                .attr('class', 'seal-single-rect')
                 .attr('id', (d) => `${d['seal_name']}-circle`)
                 .attr('x', 0)
                 .attr('y', 0)   

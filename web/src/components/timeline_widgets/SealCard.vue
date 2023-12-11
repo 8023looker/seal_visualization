@@ -87,6 +87,7 @@ import { mapState } from "vuex";
 import * as SealCardFunc from "@/utils/timeline/seal_card_func";
 import * as RenderLinkFunc from "@/utils/timeline/render_link_func";
 import * as HandleTimelineData from "@/utils/timeline/handle_timeline_data";
+import * as TimelineInteractionFunc from "@/utils/timeline/interaction_func"
 
 const d3 = require("d3");
 const $ = require("jquery");
@@ -123,12 +124,13 @@ export default {
                 show: false,
                 src: null,
                 label: null
-            }
+            },
+            ifHoverSealCardDirectly: false, // 判断当前的hover操作是否是直接对seal card进行的
         };
     },
     props: ["canvas_width", "canvas_height", "data"],
     computed: {
-        ...mapState(["language", "cur_view", "painting_name", "rem", "selection"]),
+        ...mapState(["language", "cur_view", "painting_name", "rem", "selection", "hover"]),
        
     },
     watch: {
@@ -142,9 +144,31 @@ export default {
         selection: {
             handler: function(newVal, oldVal) {
                 const self = this
-                if (newVal === 'timeline' && newVal !== oldVal) {
+                if (newVal !== oldVal) {
                     console.log('selection', newVal)
-                    self.renderSealCard()
+                    if (newVal.entity !== null) {
+                        TimelineInteractionFunc.ClickSealName(newVal.value, self.ifHoverSealCardDirectly)
+                    } else { // unclicked
+                        TimelineInteractionFunc.HoverNull(newVal, self.ifHoverSealCardDirectly)
+                    }
+                }
+            },
+            deep: true
+        },
+        hover: {
+            handler: function(newVal, oldVal) {
+                const self = this
+                if (newVal !== oldVal) { // seal_pic info card的响应操作
+                    if (newVal.entity === null) {
+                        TimelineInteractionFunc.HoverNull(self.selection, self.ifHoverSealCardDirectly)
+                    } else {
+                        if (newVal.entity === 'seal_name') { // seal_name level
+                            TimelineInteractionFunc.HoverSealName(newVal.value, self.ifHoverSealCardDirectly)
+                        }
+                    }
+                    
+                } else {
+                    // continue
                 }
             },
             deep: true
@@ -195,12 +219,109 @@ export default {
                 .attr('id', 'card2circle-link-svg')
             RenderLinkFunc.card2circleLink(self.cardList, self.containerParam['unit_pixel'])
         },
+        detectInteraction() {
+            const self = this
+            setTimeout(() => {
+                // for seal rect above timeAxis
+                let seal_rect_svg = document.querySelector(".seal-circle-svg")
+                // hover
+                seal_rect_svg.addEventListener("mouseover", function(event) {
+                    // 检查点击事件的目标元素是否包含指定的 class
+                    // console.log("运行到这一步啦", event.target.classList)
+                    if (event.target.classList.contains("seal-single-rect")) {
+                        // 获取当前元素的 id
+                        const currentSealName = (event.target.id).split('-')[0]
+                        // console.log("元素被hover了！ID: " + currentSealName)
+                        self.ifHoverSealCardDirectly = false
+                        self.$store.commit("changeHover", {
+                            entity: "seal_name",
+                            value: currentSealName // single seal_name
+                        })
+                        // path.filter(d => d.data.name === currentProvinceName)
+                        //     .dispatch("click") // 模拟触发sunburst中该province的click操作
+                    }
+                })
+                // unhover
+                seal_rect_svg.addEventListener("mouseout", function(event) {
+                    self.ifHoverSealCardDirectly = false
+                    self.$store.commit("changeHover", {
+                        entity: null,
+                        value: []
+                    })
+                })
+                // click
+                seal_rect_svg.addEventListener("click", function(event) {
+                    self.ifHoverSealCardDirectly = false
+                    if (event.target.classList.contains("seal-single-rect")) {
+                        self.$store.commit("changeSelection", {
+                            entity: "seal_name",
+                            value: (event.target.id).split('-')[0] // single seal_name(一定非空)
+                        })
+                    }
+                })
+
+                // unclick
+                let unselected_layer = document.querySelector('.seal-rect-unselected-layer')
+                unselected_layer.addEventListener("click", function(event) {
+                    self.ifHoverSealCardDirectly = true
+                    self.$store.commit("changeSelection", {
+                        entity: null,
+                        value: []
+                    })
+                })
+
+                // for seal rect in collectors' card
+                let seal_rect_collector_group = document.querySelectorAll(".seal-icon-group-svg")
+                seal_rect_collector_group.forEach(function(collector_div) {
+                    // console.log('collector_div', collector_div)
+                    collector_div.addEventListener("mouseover", function(event) {
+                        // 检查点击事件的目标元素是否包含指定的 class
+                        if (event.target.classList.contains("seal-single-icon")) {
+                            // 获取当前元素的 id
+                            const currentSealName = (event.target.id).split('-')[3]
+                            console.log('currentSealName', currentSealName)
+                            self.ifHoverSealCardDirectly = false
+                            self.$store.commit("changeHover", {
+                                entity: "seal_name",
+                                value: currentSealName // single seal_name
+                            })
+                        }
+                    })
+                    // unhover
+                    collector_div.addEventListener("mouseout", function(event) {
+                        self.ifHoverSealCardDirectly = false
+                        self.$store.commit("changeHover", {
+                            entity: null,
+                            value: []
+                        })
+                    })
+                    // click
+                    collector_div.addEventListener("click", function(event) {
+                        self.ifHoverSealCardDirectly = false
+                        if (event.target.classList.contains("seal-single-icon")) {
+                            self.$store.commit("changeSelection", {
+                                entity: "seal_name",
+                                value: (event.target.id).split('-')[3] // single seal_name(一定非空)
+                            })
+                        } else if (event.target.classList.contains("seal-collector-icon-unselected-layer")) { // unclick
+                            self.$store.commit("changeSelection", {
+                                entity: null,
+                                value: [] // single seal_name(一定非空)
+                            })
+                        }
+                    })
+                })
+
+            }, time_duration)
+            
+        },
     },
     mounted() {
         const that = this
         that.initialize()
         that.getTimeScale()
         that.renderSealCard()
+        that.detectInteraction()
     },
 };
 </script>

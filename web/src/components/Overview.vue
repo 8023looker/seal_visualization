@@ -155,7 +155,7 @@ export default {
             // console.log("detectImageScroll")
             let eventDiv = document.getElementById('full-image-container') // 信息卡片container
             eventDiv.addEventListener('scroll', function() { // 实时监听scroll
-            //    console.log('image-container移动啦, thumbnail也要跟着移动啦', eventDiv.scrollLeft)
+                // console.log('image-container移动啦, thumbnail也要跟着移动啦', eventDiv.scrollLeft)
                self.fullImageContainerX = eventDiv.scrollLeft
             })
         },
