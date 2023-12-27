@@ -279,7 +279,6 @@ export default {
                         if (event.target.classList.contains("seal-single-icon")) {
                             // 获取当前元素的 id
                             const currentSealName = (event.target.id).split('-')[3]
-                            console.log('currentSealName', currentSealName)
                             self.ifHoverSealCardDirectly = false
                             self.$store.commit("changeHover", {
                                 entity: "seal_name",
@@ -311,7 +310,6 @@ export default {
                         }
                     })
                 })
-
             }, time_duration)
             
         },
