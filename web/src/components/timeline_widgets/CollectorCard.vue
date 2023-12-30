@@ -109,7 +109,7 @@ export default {
                 self.containerParam = SealCardFunc.getSealCardContainerSize() // {x: , width: }
 
                 self.containerParam['card_width'] = self.containerParam['width'] / collector_card_num // 220单位
-                self.containerParam['card_height'] = self.containerParam['card_width'] * 0.85 * 100 / 220 // 100单位, * 0.9 * 100 / 220
+                self.containerParam['card_height'] = self.containerParam['card_width'] * 0.9 * 100 / 220 // 100单位, * 0.85 * 100 / 220
                 self.containerParam['unit_pixel'] = self.containerParam['card_height'] / 100
 
                 console.log(self.data['collectors'])

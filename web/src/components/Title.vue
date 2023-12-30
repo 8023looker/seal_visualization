@@ -43,7 +43,7 @@ export default {
             // cur_lang: "zh",
             langs: ["zh", "en"],
             title: {
-                zh: "印章时间线", // 印章可视化
+                zh: "印章可视化", // 印章时间线
                 en: "Seal Visualization",
             },
             lang_dict: {

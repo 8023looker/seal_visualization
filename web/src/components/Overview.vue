@@ -93,7 +93,6 @@ export default {
             const self = this
             if (newValue === 'overview' && newValue !== oldValue) {
                 console.log('从其他视图切换到overview视图啦')
-
                 setTimeout(() => { // 需要设置延迟，否则$('.image-scroll-container').width()依然为0
                     self.renderUnselectedLayer() // 在切换到当前视图时需要重新刷新一遍(因为jQuery: $('.image-scroll-container'))
                     self.renderSealRect(self.cardList, self.resize_scale) // 框选印章
@@ -132,7 +131,12 @@ export default {
         },
         transition: {
             handler: function (newVal, _) {
-                this.transition_handler(newVal);
+                const self = this
+                if (newVal.to !== 'timeline' && newVal.from !== 'timeline') {
+                    self.transition_handler(newVal);
+                } else {              
+                    self.$store.commit("changeCurViewForce", newVal.to)
+                }
             },
             deep: true,
         },
@@ -290,6 +294,7 @@ export default {
                             .attr('fill', 'white')
                             .attr('fill-opacity', 0)
                             .attr('stroke', 'red')
+                            .style('cursor', 'pointer')
                             .on('click', (event) => {
                                 // console.log('当前click印章图片', event.srcElement.__data__.seal_name, event.srcElement.__data__.index)
                                 let selected_seal_pic_list = self.selection['value']
@@ -434,6 +439,7 @@ export default {
         justify-content: center;
 
         overflow-x: auto;
+        z-index: 2;
     }
     .overview-transition-svg {
         position: absolute;

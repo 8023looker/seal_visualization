@@ -30,6 +30,9 @@ import { mapState } from "vuex";
 
 const d3 = require("d3");
 const $ = require("jquery");
+const time_duration = 1000,
+      timeout_duration = 100
+
 import TimeAxis from "./timeline_widgets/TimeAxis.vue";
 import SealCard from "./timeline_widgets/SealCard.vue";
 import CollectorCard from "./timeline_widgets/CollectorCard.vue";
@@ -52,14 +55,18 @@ export default {
     },
     props: ["canvas_width", "canvas_height"],
     computed: {
-        ...mapState(["language", "cur_view", "painting_name", "rem", "selection", "hover"]),
+        ...mapState(["language", "cur_view", "painting_name", "rem", "selection", "hover", "transition"]),
     
     },
     watch: {
         cur_view: function(newValue, oldValue) {
             const self = this
-            if (newValue === 'timeline' && newValue !== oldValue) {
-                console.log('从其他视图切换到timeline视图啦')
+            if (newValue !== oldValue) {
+                if (newValue === 'timeline') {
+                    console.log('从其他视图切换到timeline视图啦')
+                } else { // 从timeline切换到其他视图
+                    console.log('从timeline视图切换到其他视图啦')
+                }
             }
         },
         selection: { // 注意：当前select || hover 均为单选，而非List
@@ -79,6 +86,15 @@ export default {
                 }
             },
             deep: true
+        },
+        transition: {
+            handler: function (newVal, _) {
+                const self = this
+                if (newVal.to === 'timeline' || newVal.from === 'timeline') {
+                    self.$store.commit("changeCurViewForce", newVal.to)        
+                }
+            },
+            deep: true,
         },
     },
     methods: {

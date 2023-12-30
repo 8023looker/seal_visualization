@@ -5,7 +5,7 @@
                 v-for="(view_name, idx) in views"
                 :key="'view-buttion-' + idx"
                 :class="view_name === cur_view ? 'button selected' : 'button'"
-                @click="$store.commit('changeCurView', view_name)" 
+                @click="view_name === 'timeline' || cur_view === 'timeline' ? $store.commit('changeCurViewForce', view_name) : $store.commit('changeCurView', view_name)"
             > <!--changeCurViewForce-->
                 {{ view_names[view_name][language] }}
             </div>

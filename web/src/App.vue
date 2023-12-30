@@ -5,10 +5,10 @@
             :style="{ left: (window_width - render_width) / 2 + 'px', top: (window_height - render_height) / 2 + 'px', width: render_width + 'px', height: render_height + 'px' }">
             <div class="header">
                 <Title></Title>
-                <!-- <SwitchView></SwitchView> -->
+                <SwitchView></SwitchView>
             </div>
             <div class="left-panel">
-            
+                <LeftPanel></LeftPanel>
             </div>
             <div class="main-panel">
                 <div id="main-view" v-if="render_main">
@@ -21,7 +21,7 @@
                     ></Overview>
                     <Timeline
                         v-show="
-                            cur_view === 'timeline' || overlay_view === 'timeline'
+                            cur_view === 'timeline'
                         "
                         :canvas_width="canvas_width"
                         :canvas_height="canvas_height"
@@ -50,6 +50,7 @@ import SwitchLanguage from "./components/SwitchLanguage.vue";
 import Timeline from "./components/Timeline.vue";
 import Overview from "./components/Overview.vue";
 import LayoutView from "./components/LayoutView.vue";
+import LeftPanel from "./components/LeftPanel.vue";
 // import TimeAxis from "./components/TimeAxis.vue";
 
 
@@ -87,6 +88,7 @@ export default {
         Timeline,
         Overview,
         LayoutView,
+        LeftPanel,
         // TimeAxis,
     },
     computed: {
@@ -237,7 +239,7 @@ body {
         position: absolute;
 
         $title-height: 6.4%;
-        $left-panel-width: 0%; // 10%
+        $left-panel-width: 10%; // 10%
         // $bottom-panel-height: 10%;
 
         $switch-lang-width: $left-panel-width;
@@ -259,15 +261,15 @@ body {
             height: 100% - $title-height;
             top: $title-height;
             // font-family: FZQINGKBYSJF;
-            background-color: rgba(13, 79, 137, 0.05);
+            // background-color: rgba(13, 79, 137, 0.05);
         }
 
         .main-panel {
             position: absolute;
             // height: 100% - $title-height - $bottom-panel-height;
             height: 100% - $title-height;
-            width: calc(100% - $left-panel-width);
-            left: $left-panel-width;
+            width: calc(100% - $left-panel-width); // calc(100% - $left-panel-width)
+            left: $left-panel-width; // $left-panel-width
             top: $title-height;
             // background-color: rgba(240, 255, 255, 0.282);
 

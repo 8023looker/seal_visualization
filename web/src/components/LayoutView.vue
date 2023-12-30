@@ -118,7 +118,12 @@ export default {
         },
         transition: {
             handler: function (newVal, _) {
-                this.transition_handler(newVal);
+                const self = this
+                if (newVal.to !== 'timeline' && newVal.from !== 'timeline') {
+                    self.transition_handler(newVal);
+                } else {
+                    self.$store.commit("changeCurViewForce", newVal.to)
+                }
             },
             deep: true,
         },
@@ -199,7 +204,6 @@ export default {
                 setTimeout(() => {
                     self.$store.commit("transCompleted", null);
                 }, time_duration);
-                // this.initializeTimeline()
             }
         },
     },

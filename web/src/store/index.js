@@ -9,7 +9,7 @@ export default createStore({
     state: {
         rem: null,
         language: "zh",
-        cur_view: "timeline", // "timeline", "overview", "layout"
+        cur_view: "overview", // "timeline", "overview", "layout"
         overlay_view: null,
         overlay_duration: 2000,
         transition: {
