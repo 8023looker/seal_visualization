@@ -79,7 +79,7 @@ export default {
     },
     props: ["canvas_width", "canvas_height"],
     computed: {
-        ...mapState(["language", "cur_view", "painting_name", "selection", "transition", "overlay_duration", "rem"]),
+        ...mapState(["language", "cur_view", "painting_name", "selection", "hover", "transition", "overlay_duration", "rem"]),
     },
     watch: {
         cur_view: function(newValue, oldValue) {
@@ -92,6 +92,14 @@ export default {
                     console.log('selection in left panel', newVal)
                     self.sealDetailInfo = DetailInfoFunc.getSealPicDetail(self.cardList, newVal.value)
                 }
+                BarChartFunc.barchartTransition(self.hover, newVal, self.data["collectors"])
+            },
+            deep: true
+        },
+        hover: {
+            handler: function(newVal, oldVal) {
+                const self = this
+                BarChartFunc.barchartTransition(newVal, self.selection, self.data["collectors"])
             },
             deep: true
         },
@@ -121,6 +129,10 @@ export default {
         },
         renderBarChart() {
             const self = this
+            // self.data["collectors"] = self.data["collectors"].map(function(item, index) {
+            //     item['collector_index'] = index
+            //     return item
+            // })
             BarChartFunc.renderBarchart(self.data["collectors"])
         },
         getSealPicHrefIndex(href_link) { // 从href中提取seal pic index
@@ -218,10 +230,6 @@ $upper-panel-height: 75%;
         // background-color: rgba(247, 171, 0, 0.15);
     }
     .seal-series-pic {
-        // flex-grow: 1;
-        // position: absolute;
-        // left: 2.5%;
-        // width: 95%;
         height: auto;
         flex: 1;
         margin-top: 5%;
@@ -229,6 +237,9 @@ $upper-panel-height: 75%;
         padding-right: 10%;
         overflow-y: auto;
         // background-color: rgba(247, 171, 0, 0.15);
+        .single-seal-pic img {
+            cursor: pointer;
+        }
     }
 }
 .glyth-container {

@@ -125,7 +125,6 @@ export default {
                 src: null,
                 label: null
             },
-            ifHoverSealCardDirectly: false, // 判断当前的hover操作是否是直接对seal card进行的
         };
     },
     props: ["canvas_width", "canvas_height", "data"],
@@ -139,6 +138,7 @@ export default {
             if (newVal === 'timeline' && newVal !== oldVal) {
                 // console.log(self.selection)
                 self.renderSealCard()
+                self.detectInteraction()
             }
         },
         selection: {
@@ -147,9 +147,9 @@ export default {
                 if (newVal !== oldVal) {
                     console.log('selection', newVal)
                     if (newVal.entity !== null) {
-                        TimelineInteractionFunc.ClickSealName(newVal.value, self.ifHoverSealCardDirectly)
+                        // function合并了click和hover的操作
                     } else { // unclicked
-                        TimelineInteractionFunc.HoverNull(newVal, self.ifHoverSealCardDirectly)
+                        TimelineInteractionFunc.HoverNull(newVal)
                     }
                 }
             },
@@ -160,10 +160,10 @@ export default {
                 const self = this
                 if (newVal !== oldVal) { // seal_pic info card的响应操作
                     if (newVal.entity === null) {
-                        TimelineInteractionFunc.HoverNull(self.selection, self.ifHoverSealCardDirectly)
+                        TimelineInteractionFunc.HoverNull(self.selection)
                     } else {
                         if (newVal.entity === 'seal_name') { // seal_name level
-                            TimelineInteractionFunc.HoverSealName(newVal.value, self.ifHoverSealCardDirectly)
+                            TimelineInteractionFunc.HoverSealName(newVal.value, false)
                         }
                     }
                     
@@ -197,7 +197,7 @@ export default {
 
                 SealCardFunc.draw_seal_rect(self.data, self.containerParam['unit_pixel'] * 12) // 绘制seal circle, rem
                 self.cardList = SealCardFunc.SealCardMapping(self.data) // mapped seal pictures into list (In this step all seal pictures are included.)
-                self.cardList = HandleTimelineData.getCardListSubset(self.cardList, self.selection)
+                // self.cardList = HandleTimelineData.getCardListSubset(self.cardList, self.selection) // 可以暂时丢弃掉，显示全部seal_pic_card
                 self.sealContainerShow = true
 
                 setTimeout(() => { // 渲染seal-icon-group，以及seal card右边的seal pic circle
@@ -232,7 +232,6 @@ export default {
                         // 获取当前元素的 id
                         const currentSealName = (event.target.id).split('-')[0]
                         // console.log("元素被hover了！ID: " + currentSealName)
-                        self.ifHoverSealCardDirectly = false
                         self.$store.commit("changeHover", {
                             entity: "seal_name",
                             value: currentSealName // single seal_name
@@ -243,7 +242,6 @@ export default {
                 })
                 // unhover
                 seal_rect_svg.addEventListener("mouseout", function(event) {
-                    self.ifHoverSealCardDirectly = false
                     self.$store.commit("changeHover", {
                         entity: null,
                         value: []
@@ -251,7 +249,6 @@ export default {
                 })
                 // click
                 seal_rect_svg.addEventListener("click", function(event) {
-                    self.ifHoverSealCardDirectly = false
                     if (event.target.classList.contains("seal-single-rect")) {
                         self.$store.commit("changeSelection", {
                             entity: "seal_name",
@@ -263,7 +260,6 @@ export default {
                 // unclick
                 let unselected_layer = document.querySelector('.seal-rect-unselected-layer')
                 unselected_layer.addEventListener("click", function(event) {
-                    self.ifHoverSealCardDirectly = true
                     self.$store.commit("changeSelection", {
                         entity: null,
                         value: []
@@ -279,7 +275,6 @@ export default {
                         if (event.target.classList.contains("seal-single-icon")) {
                             // 获取当前元素的 id
                             const currentSealName = (event.target.id).split('-')[3]
-                            self.ifHoverSealCardDirectly = false
                             self.$store.commit("changeHover", {
                                 entity: "seal_name",
                                 value: currentSealName // single seal_name
@@ -288,7 +283,6 @@ export default {
                     })
                     // unhover
                     collector_div.addEventListener("mouseout", function(event) {
-                        self.ifHoverSealCardDirectly = false
                         self.$store.commit("changeHover", {
                             entity: null,
                             value: []
@@ -296,7 +290,6 @@ export default {
                     })
                     // click
                     collector_div.addEventListener("click", function(event) {
-                        self.ifHoverSealCardDirectly = false
                         if (event.target.classList.contains("seal-single-icon")) {
                             self.$store.commit("changeSelection", {
                                 entity: "seal_name",
@@ -376,6 +369,9 @@ export default {
                 flex-direction: row;
                 justify-content: center; 
                 align-items: center; // new
+                .seal-pic img {
+                    cursor: pointer;
+                }
             }
             .info-row {
                 position: absolute;

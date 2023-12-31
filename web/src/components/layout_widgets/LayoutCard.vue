@@ -4,7 +4,7 @@
             <img :src="fullImageModel.src" style="width: 100%; height: 100%; object-fit: contain;">
         </div>
     </el-dialog>
-    <div class="layout-seal-card"
+    <div class="layout-seal-card" v-if="sealContainerShow"
         :style="{left: seal_detail['card_pos']['x'] + 'px', top: seal_detail['card_pos']['y'] + 'px',
                  height: containerParam.card_height * 1.1 + 'px', width: (containerParam.card_width * 0.9 + containerParam.unit_pixel * 4) + 'px'}">
         <div class="seal-index-rect" :style="{paddingLeft: containerParam.unit_pixel * 2 + 'px', paddingRight: containerParam.unit_pixel * 2 + 'px', height: containerParam.unit_pixel * 18 + 'px', fontSize: containerParam.unit_pixel * 16 + 'px'}">{{ seal_detail['index'] }}</div>
@@ -124,7 +124,19 @@ export default {
         },
         resize_scale: function(newVal, oldVal) {
 
-        }
+        },
+        cur_view: function(newValue, oldValue) {
+            const self = this
+            if (newValue === 'layout') {
+                console.log('从其他视图切换到layout视图啦')
+                setTimeout(() => { // 需要设置延迟，否则$('.image-scroll-container').width()依然为0
+                    self.renderSealCard()
+                    self.sealContainerShow = true
+                }, timeout_duration)
+            } else {
+                self.sealContainerShow = false
+            }
+        },
     },
     methods: {
         initialize() {
@@ -141,7 +153,9 @@ export default {
 
                 // console.log('self.containerParam', self.containerParam)
 
-                self.sealContainerShow = true
+                if (self.cur_view === 'layout') {
+                    self.sealContainerShow = true
+                }
 
             }, timeout_duration)
         },

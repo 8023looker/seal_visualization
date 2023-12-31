@@ -4,7 +4,7 @@
             <img :src="fullImageModel.src" style="width: 100%; height: 100%; object-fit: contain;">
         </div>
     </el-dialog>
-    <div v-show="cur_view === 'layout'" class="layout-container">
+    <div v-show="cur_view === 'layout'" class="layout-container" id="layout-container">
         <div v-if="showSealDiv" v-for="(item, index) in cardList" :key="index" class="seal-image-container"
             :style="{width: item.layout_params.width + 'px', height: item.layout_params.height + 'px', left: item.layout_params.x + 'px', top: item.layout_params.y + 'px'}">
             <!-- <img :src="item.image_href" class="seal-image" :id="'seal-image-layout-' + item.index"
@@ -12,7 +12,7 @@
             <img :src="item.image_href" class="seal-image" :id="'sealImageLayout-' + item.index"
                 @click="showSealInfoCard">
         </div>
-        <LayoutCard v-for="(item, index) in detailSealInfo"
+        <LayoutCard v-for="(item, index) in detailSealInfo" class="layout-card" :key="index" v-show="showSealDiv"
             :seal_detail="JSON.parse(JSON.stringify(item))"
             :cardList="cardList"
         ></LayoutCard>
@@ -85,7 +85,7 @@ export default {
     watch: {
         cur_view: function(newValue, oldValue) {
             const self = this
-            if (newValue === 'layout' && newValue !== oldValue) {
+            if (newValue === 'layout') {
                 console.log('从其他视图切换到layout视图啦')
                 setTimeout(() => { // 需要设置延迟，否则$('.image-scroll-container').width()依然为0
                     self.showSealDiv = true
@@ -134,6 +134,26 @@ export default {
             },
             deep: true
         },
+        showSealDiv: function(newVal, oldVal) {
+            const self = this
+            if (newVal) {
+               setTimeout(() => {
+                    document.getElementById("layout-container").addEventListener("click", function(event) {
+                        // 检查点击的目标元素是否是父 div 而非子 div
+                        if (event.target.id.includes('sealImageLayout-')) {
+                            // console.log("点击了子 div 区域")
+                            // 无操作
+                        } else {
+                            // console.log("点击了父 div 区域")
+                            self.$store.commit("changeSelection", {
+                                entity: null,
+                                value: []
+                            })
+                        }
+                    })
+                }, timeout_duration)
+            }
+        },
     },
     methods: {
         initialize() { // 在切换到当前视图时需要重新刷新一遍
@@ -156,16 +176,20 @@ export default {
                 y: rect.top - $('.main-panel').offset().top // event.clientY - rect.top
             }
             
-            if (!selected_seal_pic_list.includes(seal_pic_index)) {
-                selected_seal_pic_list = [...new Set(selected_seal_pic_list)] // 去重
-                selected_seal_pic_list.push(seal_pic_index)
-                self.$store.commit("changeSelection", {
-                    entity: "seal_pic",
-                    value: selected_seal_pic_list
-                })
+            if (selected_seal_pic_list.includes(seal_pic_index)) {
+                const del_index = selected_seal_pic_list.indexOf(seal_pic_index)
+                if (del_index !== -1) {
+                    selected_seal_pic_list.splice(del_index, 1);
+                }
             } else {
                 // 没有操作
             }
+            selected_seal_pic_list = [...new Set(selected_seal_pic_list)] // 去重
+            selected_seal_pic_list.push(seal_pic_index)
+            self.$store.commit("changeSelection", {
+                entity: "seal_pic",
+                value: selected_seal_pic_list
+            })
         },
         initializeSealPosDict() {
             const self = this

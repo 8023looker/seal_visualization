@@ -4,10 +4,13 @@ const $ = require("jquery");
 import { jsonCopy } from "@/utils/copy";
 import * as TypeColor from "@/theme/type_color";
 
-export function renderBarchart(collector_data) {
+const time_duration = 1000
+
+export function renderBarchart(collector_data_ori) {
     const svg = d3.select("#barchart-svg")
     const svg_width = $(`#barchart-svg`).width(),
           svg_height = $(`#barchart-svg`).height()
+    let collector_data = jsonCopy(collector_data_ori)
     collector_data.sort((a, b) => b['seals'].length - a['seals'].length)
     let max_seal_num = compute_max_seal_num(collector_data) // let max_seal_num = collector_data[0]['seals'].length
     // console.log("svg_width", svg_width, "svg_height", svg_height, "max_seal_num", max_seal_num) // success
@@ -16,7 +19,7 @@ export function renderBarchart(collector_data) {
                                 .data(collector_data)
                                 .enter()
                                 .append("g")
-                                .attr("class", "collector-group")
+                                .attr("class", "barchart-collector-group")
                                 .attr("transform", function(d, i) {
                                     return "translate(0," + (2 * i + 1) * svg_height / (2 * collector_data.length + 1) + ")"
                                 })
@@ -56,4 +59,68 @@ function compute_max_seal_num(collector_data) {
         }
     }
     return max_seal_num
+}
+
+// 改变barchart的transition
+export function barchartTransition(hover, selection, collector_data_ori) {
+    console.log('barchartTransition换位置啦')
+    let resorted_collector_data = jsonCopy(collector_data_ori)
+    resorted_collector_data.sort((a, b) => b['seals'].length - a['seals'].length)
+    let collector_dict = initializeCollectorDict(resorted_collector_data) // 通过dict实现
+    let selected_collector_name = null,
+        hover_collector_name = null
+    if (selection.entity !== null || hover.entity !== null) { // 当前有处于selection状态的entity(seal_name, 设置的只有一个selected seal name)
+        for (let i = 0; i < resorted_collector_data.length; i++) {
+            const cur_seal_list = resorted_collector_data[i]["seals"]
+            for (let j = 0; j < cur_seal_list.length; j++) {
+                if (cur_seal_list[j]["seal_name"] === selection.value) { // selection
+                    selected_collector_name = resorted_collector_data[i]["collector_name"]
+                }
+                if (cur_seal_list[j]["seal_name"] === hover.value) { // hover
+                    hover_collector_name = resorted_collector_data[i]["collector_name"]
+                }
+            }
+        }
+    } else { // selection, hover均为null
+        // collector_dict按照default来
+    }
+
+    // 将selected_collector_name对应的collector放在最前面
+    if (selected_collector_name !== null) {
+        const selected_index = resorted_collector_data.findIndex(obj => obj["collector_name"] === selected_collector_name)
+        const selected_item = resorted_collector_data.pop(selected_index)
+        console.log("selected_index", selected_index, resorted_collector_data, selected_collector_name)
+        resorted_collector_data.unshift(selected_item)
+    }
+    // 将hover_collector_name对应的collector放在最前面
+    if (hover_collector_name !== null) {
+        const hover_index = resorted_collector_data.findIndex(obj => obj["collector_name"] === hover_collector_name)
+        const hover_item = resorted_collector_data.pop(hover_index)
+        resorted_collector_data.unshift(hover_item)
+    }
+
+    // update collector_dict
+    for (let i = 0; i < resorted_collector_data.length; i++) {
+        collector_dict[resorted_collector_data[i]["collector_name"]] = i
+    }
+    console.log("collector_dict", collector_dict)
+
+    // update barchart
+    const svg_height = $(`#barchart-svg`).height()
+    d3.selectAll('.barchart-collector-group')
+        .transition()
+        .duration(time_duration) // filter时的过渡
+        .attr('transform', d => {
+            const i = collector_dict[d["collector_name"]]
+            return `translate(0, ${(2 * i + 1) * svg_height / (2 * resorted_collector_data.length + 1)})`
+        })
+}
+
+// 初始化collector_dict
+function initializeCollectorDict(collector_data) {
+    let collector_dict = {}
+    for (let i = 0; i < collector_data.length; i++) {
+        collector_dict[collector_data[i]["collector_name"]] = i
+    }
+    return collector_dict
 }

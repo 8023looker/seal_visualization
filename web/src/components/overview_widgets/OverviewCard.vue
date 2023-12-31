@@ -4,7 +4,7 @@
             <img :src="fullImageModel.src" style="width: 100%; height: 100%; object-fit: contain;">
         </div>
     </el-dialog>
-    <div class="overview-seal-card"
+    <div class="overview-seal-card" v-show="sealContainerShow"
         :style="{left: (seal_detail['x'] + seal_detail['width']) * resize_scale + 'px', top: seal_detail['y'] * resize_scale + 'px',
                  height: containerParam.card_height * 1.1 + 'px', width: (containerParam.card_width * 0.9 + containerParam.unit_pixel * 4) + 'px'}">
         <div class="seal-index-rect" :style="{paddingLeft: containerParam.unit_pixel * 2 + 'px', paddingRight: containerParam.unit_pixel * 2 + 'px', height: containerParam.unit_pixel * 18 + 'px', fontSize: containerParam.unit_pixel * 16 + 'px'}">{{ seal_detail['index'] }}</div>
@@ -124,7 +124,17 @@ export default {
         },
         resize_scale: function(newVal, oldVal) {
 
-        }
+        },
+        cur_view: function(newValue, oldValue) {
+            const self = this
+            if (newValue === 'overview') {
+                setTimeout(() => { // 需要设置延迟
+                    self.sealContainerShow = true
+                }, timeout_duration)
+            } else {
+                self.sealContainerShow = false
+            }
+        },
     },
     methods: {
         initialize() {
@@ -141,8 +151,9 @@ export default {
 
                 // console.log('self.containerParam', self.containerParam)
 
-                self.sealContainerShow = true
-
+                if (self.cur_view === 'overview') {
+                    self.sealContainerShow = true
+                }
             }, timeout_duration)
         },
         clickPrevNext(button_choice) {
@@ -219,6 +230,9 @@ export default {
                 display: flex;
                 flex-direction: row;
                 align-items: center; // new
+            }
+            .seal-pic img {
+                cursor: pointer;
             }
         }
         .seal-page {

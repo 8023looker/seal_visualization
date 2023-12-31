@@ -13,7 +13,7 @@ const margin = {
 };
 
 // timeline视图中对hover操作做出的一系列响应
-export function HoverNull(selection, ifHoverSealCardDirectly) { // hover.entity === null
+export function HoverNull(selection) { // hover.entity === null
     // 对于seal_card的响应操作
     let sealCardGroup = document.querySelector('#seal-card-container') // document.getElementById('seal-card-container')
     let sealCardDivs = sealCardGroup.querySelectorAll('.card-rect') // list(190)
@@ -48,13 +48,13 @@ export function HoverNull(selection, ifHoverSealCardDirectly) { // hover.entity 
         if (selection.entity === 'collector') {
             // 待添加
         } else if (selection.entity === 'seal_name') {
-            console.log('selection', selection)
-            HoverSealName(selection.value, ifHoverSealCardDirectly)
+            // console.log('selection', selection)
+            HoverSealName(selection.value, true)
         }
     }
 }
 
-export function HoverSealName(seal_name, ifHoverSealCardDirectly) { // ifHoverSealCardDirectly is Boolean
+export function HoverSealName(seal_name, ifHoverNull) { // ifSelected is Boolean
     // 对于 seal_card 的响应操作
     // 获取包含div组的父元素
     let sealCardGroup = document.querySelector('#seal-card-container') // document.getElementById('seal-card-container')
@@ -74,7 +74,7 @@ export function HoverSealName(seal_name, ifHoverSealCardDirectly) { // ifHoverSe
                 .style('border', '3px solid #8F7B6C')
                 .style("filter", 'drop-shadow(0.2px 0.2px 0.2px rgb(0 0 0 / 0.6))')
 
-            if (!findFirstSealCard && !judgeIfVisible(sealCardGroup, div)) {
+            if (!findFirstSealCard && !judgeIfVisible(sealCardGroup, div) && !ifHoverNull) {
                 // 滚动到指定位置
                 // console.log('还没有偏移到指定位置', div.offsetParent.style.left, document.getElementById('seal-card-container').scrollLeft)
                 // const seal_card_container = document.getElementById('seal-card-container')
@@ -127,8 +127,4 @@ function judgeIfVisible(seal_card_container, cur_div) {
     let ifVisible = seal_card_container.scrollLeft < parseInt(cur_div.offsetParent.style.left)
                     && (seal_card_container.scrollLeft + seal_card_container.offsetWidth) > parseInt(cur_div.offsetParent.style.left)
     return ifVisible
-}
-
-export function ClickSealName(seal_name, ifHoverSealCardDirectly) {
-    // 待添加
 }
