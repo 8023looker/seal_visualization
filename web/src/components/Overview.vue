@@ -298,16 +298,20 @@ export default {
                             .on('click', (event) => {
                                 // console.log('当前click印章图片', event.srcElement.__data__.seal_name, event.srcElement.__data__.index)
                                 let selected_seal_pic_list = self.selection['value']
-                                if (!selected_seal_pic_list.includes(event.srcElement.__data__.index)) {
-                                    selected_seal_pic_list = [...new Set(selected_seal_pic_list)] // 去重
-                                    selected_seal_pic_list.push(event.srcElement.__data__.index)
-                                    self.$store.commit("changeSelection", {
-                                        entity: "seal_pic",
-                                        value: selected_seal_pic_list
-                                    })
+                                if (selected_seal_pic_list.includes(event.srcElement.__data__.index)) {
+                                    const del_index = selected_seal_pic_list.indexOf(event.srcElement.__data__.index)
+                                    if (del_index !== -1) {
+                                        selected_seal_pic_list.splice(del_index, 1);
+                                    }
                                 } else {
                                     // 没有操作
                                 }
+                                selected_seal_pic_list = [...new Set(selected_seal_pic_list)] // 去重
+                                selected_seal_pic_list.push(event.srcElement.__data__.index)
+                                self.$store.commit("changeSelection", {
+                                    entity: "seal_pic",
+                                    value: selected_seal_pic_list
+                                })
                             })
 
         },

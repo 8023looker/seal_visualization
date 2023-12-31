@@ -93,7 +93,7 @@ export function get_seal_x_group(seal_mapped_list) { // seal_mapped_list is the 
             }
         }
     }
-    console.log('seal_group_list', seal_group_list)
+    // console.log('seal_group_list', seal_group_list)
 
     // merge
     let merge_seal_group_list = merge_seal_group(seal_group_list)
@@ -171,12 +171,12 @@ function merge_seal_group(seal_group_list) {
         }
     }
     seal_merged_list = modify_sealGroup_offset2prev(seal_merged_list) // 修改seal_group的x_offset2prev属性值
-    console.log('seal_merged_list', seal_merged_list)
+    // console.log('seal_merged_list', seal_merged_list)
     return seal_merged_list
 }
 
 export function find_subgroup_centerX(sub_seal_group) {
-    console.log('sub_seal_group', sub_seal_group)
+    // console.log('sub_seal_group', sub_seal_group)
     let group_right_bound = sub_seal_group.reduce((maxValue, currentItem) => {
         const itemValue = currentItem['layout_params']['x'] + currentItem['layout_params']['width']
         return itemValue > maxValue ? itemValue : maxValue

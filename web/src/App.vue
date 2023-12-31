@@ -106,7 +106,7 @@ export default {
             let height = this.render_height
             const scale = Math.max(width, height) / 1280;
             let rem = baseSize * Math.min(scale, 2);
-            rem = Math.min(rem, 20);
+            rem = Math.min(rem, 16);
             this.$store.commit("changeRem", rem);
             document.documentElement.style.fontSize = rem + "px";
         },
@@ -239,7 +239,7 @@ body {
         position: absolute;
 
         $title-height: 6.4%;
-        $left-panel-width: 10%; // 10%
+        $left-panel-width: 12%; // 10%
         // $bottom-panel-height: 10%;
 
         $switch-lang-width: $left-panel-width;

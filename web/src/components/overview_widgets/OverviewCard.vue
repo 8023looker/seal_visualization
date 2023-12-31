@@ -15,8 +15,8 @@
                         top: containerParam.unit_pixel * 15 + 'px'}">
                     {{ seal_detail['seal_name'] }}
             </div>
-            <div class="info-row" :style="{top: containerParam.unit_pixel * (45 - 2) + 'px', height: containerParam.unit_pixel * (60 + 4) + 'px', left: '2.5%', width: '95%'}">
-                <div class="prev-next-arrow" :style="{height: containerParam.unit_pixel * 20 + 'px'}" @click="clickPrevNext('prev')">
+            <div class="info-row" :style="{top: containerParam.unit_pixel * (45 - 2) + 'px', height: containerParam.unit_pixel * (60 + 4) + 'px', left: '2.5%', width: '95%', justifyContent: 'center'}">
+                <!-- <div class="prev-next-arrow" :style="{height: containerParam.unit_pixel * 20 + 'px'}" @click="clickPrevNext('prev')">
                     <svg width="16" height="19" viewBox="0 0 16 19" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M13.877 2L6.78967 9.76364L13.877 17.1163" stroke="#8F7B6C" stroke-width="3.22" stroke-linecap="round" stroke-linejoin="round"/>
                         <path d="M8.96387 2L1.87658 9.76364L8.96387 17.1163" stroke="#8F7B6C" stroke-width="3.22" stroke-linecap="round" stroke-linejoin="round"/>
@@ -32,12 +32,12 @@
                         <path d="M2 2L9.08728 9.76364L2 17.1163" stroke="#8F7B6C" stroke-width="3.22" stroke-linecap="round" stroke-linejoin="round"/>
                         <path d="M6.91309 2L14.0004 9.76364L6.91309 17.1163" stroke="#8F7B6C" stroke-width="3.22" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
-                </div>
-                <!-- <div class="seal-pic"
+                </div> -->
+                <div class="seal-pic"
                     :style="{height: containerParam.unit_pixel * 75 + 'px', width: containerParam.unit_pixel * 75 + 'px'}">
                     <img :src="seal_detail.image_href" style="{max-width: 100%; max-height: 100%; margin-top: 0em; margin-bottom: 0em, cursor: 'pointer'}"
                         @click="fullImageModel.show =true, fullImageModel.src=seal_detail.image_href, fullImageModel.label = seal_detail.seal_name">
-                </div> -->
+                </div>
             </div>
             <div class="seal-page"
                 :style="{top: containerParam.unit_pixel * (105 + 2) + 'px', height: containerParam.unit_pixel * (120 - 107 - 5) + 'px', left: '2.5%', width: '95%', fontSize: containerParam.unit_pixel * 11 + 'px'}">

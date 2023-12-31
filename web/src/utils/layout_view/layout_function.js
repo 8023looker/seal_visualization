@@ -71,7 +71,7 @@ export function compute_abstract_layout(seal_mapped_list, painting_params) {
 
         whole_modified_seal_list = whole_modified_seal_list.concat(modified_seal_list)
     }
-    console.log('whole_modified_seal_list', whole_modified_seal_list)
+    // console.log('whole_modified_seal_list', whole_modified_seal_list)
     return whole_modified_seal_list
 }
 
@@ -168,19 +168,19 @@ function judge_log_scale(seal_mapped_list) {
         //     seal_area_list[i]['index'] !== seal_resize_area_list[i]['index']) {
         if (seal_area_list[i]['index'] !== seal_resize_area_list[i]['index']) { // 针对seal area的排序保持不变
                 consistency = false
-                console.log(i)
-                console.log('width', seal_width_list[i]['index'], seal_resize_width_list[i]['index'])
-                console.log('height', seal_height_list[i]['index'], seal_resize_height_list[i]['index'])
-                console.log('area', seal_area_list[i]['index'], seal_resize_area_list[i]['index'])
+                // console.log(i)
+                // console.log('width', seal_width_list[i]['index'], seal_resize_width_list[i]['index'])
+                // console.log('height', seal_height_list[i]['index'], seal_resize_height_list[i]['index'])
+                // console.log('area', seal_area_list[i]['index'], seal_resize_area_list[i]['index'])
                 break
             }
     }
-    console.log('seal size consistency', consistency)
+    // console.log('seal size consistency', consistency)
 }
 
 // 重新调整印章之间的dist(x, y坐标值), greedy
 function rescale_seal_dist(seal_detect_list, constraint_list) {
-    console.log('seal_detect_list', seal_detect_list)
+    // console.log('seal_detect_list', seal_detect_list)
     // Priority of Move Direction
     // 1. x-axis > y-axis
     // 2. short distance > long distance
@@ -714,7 +714,7 @@ function optimized_moving_direction(cur_redefined_seal, moving_value, constraint
                 } else if (prev_direction === 'down') {
                     keys.splice(keys.indexOf('up'), 1)
                 }
-                console.log('keys', keys)
+                // console.log('keys', keys)
                 // 使用 Math.min() 和 apply() 方法找到最小键值
                 const minKey = keys.reduce((a, b) => moving_value[a] < moving_value[b] ? a : b)
                 if (minKey === 'left') {
@@ -730,9 +730,9 @@ function optimized_moving_direction(cur_redefined_seal, moving_value, constraint
                     direction_value = 'down'
                     seal_mapped_list_copy[found_index_number]['layout_params']['y'] += moving_value['down']
                 }
-                console.log(`low level-${moving_index}`)
+                // console.log(`low level-${moving_index}`)
             } else { // found under the "middle level" constraints
-                console.log(`middle level-${moving_index}`)
+                // console.log(`middle level-${moving_index}`)
                 // continue
             }
         } else { // found under the "high level" constraints
