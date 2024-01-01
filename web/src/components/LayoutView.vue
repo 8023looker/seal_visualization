@@ -64,7 +64,7 @@ export default {
     },
     props: ["canvas_width", "canvas_height"],
     computed: {
-        ...mapState(["language", "cur_view", "painting_name", "selection", "painting_pic", "transition", "overlay_duration"]),
+        ...mapState(["language", "cur_view", "painting_name", "selection", "hover", "painting_pic", "transition", "overlay_duration"]),
         detailSealInfo: {
             get() {
                 const self = this
@@ -97,7 +97,6 @@ export default {
         selection: {
             handler: function(newVal, oldVal) {
                 const self = this
-
             },
             deep: true
         },
