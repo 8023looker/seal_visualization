@@ -63,7 +63,7 @@ function compute_max_seal_num(collector_data) {
 
 // 改变barchart的transition
 export function barchartTransition(hover, selection, collector_data_ori) {
-    console.log('barchartTransition换位置啦')
+    // console.log('barchartTransition换位置啦') // success
     let resorted_collector_data = jsonCopy(collector_data_ori)
     resorted_collector_data.sort((a, b) => b['seals'].length - a['seals'].length)
     let collector_dict = initializeCollectorDict(resorted_collector_data) // 通过dict实现
@@ -88,14 +88,15 @@ export function barchartTransition(hover, selection, collector_data_ori) {
     // 将selected_collector_name对应的collector放在最前面
     if (selected_collector_name !== null) {
         const selected_index = resorted_collector_data.findIndex(obj => obj["collector_name"] === selected_collector_name)
-        const selected_item = resorted_collector_data.pop(selected_index)
-        console.log("selected_index", selected_index, resorted_collector_data, selected_collector_name)
+        const selected_item = resorted_collector_data[selected_index]
+        resorted_collector_data.splice(selected_index, 1)
         resorted_collector_data.unshift(selected_item)
     }
     // 将hover_collector_name对应的collector放在最前面
     if (hover_collector_name !== null) {
         const hover_index = resorted_collector_data.findIndex(obj => obj["collector_name"] === hover_collector_name)
-        const hover_item = resorted_collector_data.pop(hover_index)
+        const hover_item = resorted_collector_data[hover_index]
+        resorted_collector_data.splice(hover_index, 1)
         resorted_collector_data.unshift(hover_item)
     }
 
@@ -103,7 +104,6 @@ export function barchartTransition(hover, selection, collector_data_ori) {
     for (let i = 0; i < resorted_collector_data.length; i++) {
         collector_dict[resorted_collector_data[i]["collector_name"]] = i
     }
-    console.log("collector_dict", collector_dict)
 
     // update barchart
     const svg_height = $(`#barchart-svg`).height()
@@ -114,6 +114,9 @@ export function barchartTransition(hover, selection, collector_data_ori) {
             const i = collector_dict[d["collector_name"]]
             return `translate(0, ${(2 * i + 1) * svg_height / (2 * resorted_collector_data.length + 1)})`
         })
+        .attr("filter", (d) => [...new Set([hover_collector_name, selected_collector_name])].includes(d["collector_name"]) ?
+            'drop-shadow(0.8px 0.8px 0.8px rgb(0 0 0 / 0.6))' : 'none'
+        )
 }
 
 // 初始化collector_dict
