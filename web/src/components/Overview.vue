@@ -83,7 +83,7 @@ export default {
                 let seal_pic_list = []
                 // 或许可以考虑添加一些click position的信息
                 seal_pic_list = jsonCopy(self.cardList.filter((d) => tar.includes(d['index'])))
-                console.log('Overview中的detailSealInfo', seal_pic_list, self.selection.value)
+                // console.log('Overview中的detailSealInfo', seal_pic_list, self.selection.value)
                 return seal_pic_list
             },
         },
