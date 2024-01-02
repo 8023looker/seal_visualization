@@ -12,7 +12,7 @@
             <img :src="item.image_href" class="seal-image" :id="'sealImageLayout-' + item.index"
                 @click="showSealInfoCard">
         </div>
-        <LayoutCard v-for="(item, index) in detailSealInfo" class="layout-card" :key="index" v-show="showSealDiv"
+        <LayoutCard v-for="(item, index) in detailSealInfo"
             :seal_detail="JSON.parse(JSON.stringify(item))"
             :cardList="cardList"
         ></LayoutCard>
@@ -59,7 +59,7 @@ export default {
                 label: null
             },
             showSealDiv: false,
-            sealCardPosDict: {},
+            // sealCardPosDict: {}, // abandon
         }
     },
     props: ["canvas_width", "canvas_height"],
@@ -74,10 +74,7 @@ export default {
                 // 或许可以考虑添加一些click position的信息
                 seal_pic_list = jsonCopy(self.cardList.filter((d) => tar.includes(d['index'])))
 
-                for (let i in seal_pic_list) {
-                    seal_pic_list[i]['card_pos'] = self.sealCardPosDict[seal_pic_list[i]['index']]
-                }
-                console.log(seal_pic_list, self.selection.value)
+                // console.log('Layout View中的detailSealInfo', seal_pic_list, self.selection.value)
                 return seal_pic_list
             },
         },
@@ -88,6 +85,12 @@ export default {
             if (newValue === 'layout') {
                 console.log('从其他视图切换到layout视图啦')
                 setTimeout(() => { // 需要设置延迟，否则$('.image-scroll-container').width()依然为0
+                    // if (self.painting_pic.loaded) { // not working
+                    //     self.cardList = jsonCopy(LayoutFunc.compute_abstract_layout(self.cardList, {
+                    //         width: self.painting_pic.width,
+                    //         height: self.painting_pic.height
+                    //     }))
+                    // }
                     self.showSealDiv = true
                 }, timeout_duration)
             } else {
@@ -128,7 +131,7 @@ export default {
         },
         cardList: {
             handler: function (newVal, oldVal) {
-                console.log('cardList in abstract view更新啦', newVal)
+                // console.log('cardList in abstract view更新啦', newVal)
                 setExportcardListInLayout(newVal)
             },
             deep: true
@@ -165,15 +168,15 @@ export default {
             const seal_pic_index = (event.target.id).split('-')[1] // index of current clicked seal_pic
             // console.log(seal_pic_index)
 
-            // 获取点击的div的位置信息
-            const clickedDiv = event.target
-            const rect = clickedDiv.getBoundingClientRect()
-            // console.log(rect)
+            // 获取点击的div的位置信息(视图切换时会出现bug，舍弃)
+            // const clickedDiv = event.target
+            // const rect = clickedDiv.getBoundingClientRect()
+            // // console.log(rect)
 
-            self.sealCardPosDict[seal_pic_index] = {
-                x: rect.left + rect.width - $('.main-panel').offset().left, // event.clientX - rect.left
-                y: rect.top - $('.main-panel').offset().top // event.clientY - rect.top
-            }
+            // self.sealCardPosDict[seal_pic_index] = {
+            //     x: rect.left + rect.width - $('.main-panel').offset().left, // event.clientX - rect.left
+            //     y: rect.top - $('.main-panel').offset().top // event.clientY - rect.top
+            // }
             
             if (selected_seal_pic_list.includes(seal_pic_index)) {
                 const del_index = selected_seal_pic_list.indexOf(seal_pic_index)
@@ -190,15 +193,15 @@ export default {
                 value: selected_seal_pic_list
             })
         },
-        initializeSealPosDict() {
-            const self = this
-            for (let i in self.cardList) {
-                self.sealCardPosDict[self.cardList[i]['index']] = {
-                    x: 0,
-                    y: 0
-                }
-            }
-        },
+        // initializeSealPosDict() { // abandon
+        //     const self = this
+        //     for (let i in self.cardList) {
+        //         self.sealCardPosDict[self.cardList[i]['index']] = {
+        //             x: 0,
+        //             y: 0
+        //         }
+        //     }
+        // },
         transition_handler(trans) {
             console.log(trans);
             const self = this
@@ -246,7 +249,7 @@ export default {
 
         that.data = DataProcess.getCollectorColor(that.data)
         that.cardList = SealCardFunc.SealCardMapping(that.data) // mapped seal pictures into list
-        that.initializeSealPosDict()
+        // that.initializeSealPosDict() // abandon
         // console.log("seal_data", that.data)
 
         // LayoutFunc.compute_abstract_layout(that.cardList) // 刚开始图片可能还没有加载出来

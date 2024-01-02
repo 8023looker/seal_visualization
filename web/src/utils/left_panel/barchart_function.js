@@ -25,9 +25,9 @@ export function renderBarchart(collector_data_ori) {
                                 })
     let collector_rect = collector_group.append("rect")
                                         .attr("class", "collector-rect")
-                                        .attr("x", svg_width / 4)
+                                        .attr("x", svg_width * 0.28)
                                         .attr("y", 0)
-                                        .attr("width", (d, i) => d["seals"].length / max_seal_num * svg_width * (3 - 0.1) / 4)
+                                        .attr("width", (d, i) => d["seals"].length / max_seal_num * svg_width * (1 - 0.28))
                                         .attr("height", svg_height / (2 * collector_data.length + 1))
                                         // .attr("fill", function(d, i) {
                                         //     return TypeColor.color_list[d["collector_name"]]

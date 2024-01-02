@@ -106,7 +106,7 @@ export function layout2overview(time_duration, transition_direction, selection, 
                                 .attr('width', (d, i) => cardList[i]['layout_params']['width'])
                                 .attr('height', (d, i) => cardList[i]['layout_params']['height'])
     // set the opacity of background image && rect group in layout to 0
-    d3.selectAll('.seal-image-container')
+    d3.selectAll('.layout-container')
         .transition()
         .duration(copy_duration)
         .style("opacity", 0)

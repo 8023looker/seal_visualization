@@ -209,9 +209,10 @@ $upper-panel-height: 80%;
     // background-color: rgba(247, 171, 0, 0.05);
     .barchart-title {
         position: absolute;
-        left: auto;
+        left: 2.5%;
         top: 0%;
         height: 5%;
+        width: 95%;
         display: flex;
         align-items: center;
         color: #724A2B;
@@ -219,9 +220,9 @@ $upper-panel-height: 80%;
     }
     #barchart-svg {
         position: absolute;
-        left: 0%;
+        left: 2.5%;
         top: 5%;
-        width: 100%;
+        width: 95%;
         height: 95%;
     }
 }

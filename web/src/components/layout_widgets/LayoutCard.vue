@@ -5,7 +5,7 @@
         </div>
     </el-dialog>
     <div class="layout-seal-card" v-if="sealContainerShow"
-        :style="{left: seal_detail['card_pos']['x'] + 'px', top: seal_detail['card_pos']['y'] + 'px',
+        :style="{left: (seal_detail['layout_params']['x'] + seal_detail['layout_params']['width']) + 'px', top: seal_detail['layout_params']['y'] + 'px',
                  height: containerParam.card_height * 1.1 + 'px', width: (containerParam.card_width * 0.9 + containerParam.unit_pixel * 4) + 'px'}">
         <div class="seal-index-rect" :style="{paddingLeft: containerParam.unit_pixel * 2 + 'px', paddingRight: containerParam.unit_pixel * 2 + 'px', height: containerParam.unit_pixel * 18 + 'px', fontSize: containerParam.unit_pixel * 16 + 'px'}">{{ seal_detail['index'] }}</div>
         <div class="card-rect"
