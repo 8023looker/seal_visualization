@@ -5,6 +5,7 @@ module.exports = defineConfig({
   lintOnSave: false,
   parallel: false,
   publicPath: './',
+  base: "/seal_visualization/",
   chainWebpack: config => {
     config.module
         .rule('worker')
