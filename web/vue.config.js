@@ -5,7 +5,10 @@ module.exports = defineConfig({
   lintOnSave: false,
   parallel: false,
   publicPath: './',
-  base: "/seal_visualization/",
+  // base: "/seal_visualization/",
+  // build: {
+  //   outDir: "docs"
+  // },
   chainWebpack: config => {
     config.module
         .rule('worker')
