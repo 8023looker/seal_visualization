@@ -303,7 +303,7 @@ $upper-panel-height: 80%;
     .glyth-title {
         color: #724A2B;
         margin-top: 5%;
-        margin-bottom: 5%;
+        margin-bottom: 2.5%;
         font-weight: bold;
     }
     .data-level-container {
@@ -314,8 +314,8 @@ $upper-panel-height: 80%;
             flex-direction: row;
             justify-content: space-between;
             align-items: center;
-            margin-top: 5%;
-            margin-bottom: 5%;
+            margin-top: 2.5%;
+            margin-bottom: 2.5%;
             .icon-text {
                 color: #724A2B;
             }

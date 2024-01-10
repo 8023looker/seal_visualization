@@ -28,11 +28,11 @@ export default {
             views: ["overview", "layout", "timeline"],
             view_names: {
                 overview: {
-                    zh: "总览",
+                    zh: "长卷",
                     en: "Overview",
                 },
                 layout: {
-                    zh: "抽象布局",
+                    zh: "印章总览",
                     en: "Abstract Layout",
                 },
                 timeline: {

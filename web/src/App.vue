@@ -258,7 +258,7 @@ body {
             position: absolute;
             width: $left-panel-width;
             // height: 100vh - $title-height - $bottom-panel-height;
-            height: 100% - $title-height;
+            height: 100% - $title-height - 2%;
             top: $title-height;
             // font-family: FZQINGKBYSJF;
             // background-color: rgba(13, 79, 137, 0.05);
